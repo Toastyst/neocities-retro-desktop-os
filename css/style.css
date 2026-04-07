@@ -15,13 +15,8 @@ body {
 
 .desktop {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    gap: 17px 25px;
-    padding: 30px;
     height: calc(100vh - 40px);
+    padding: 30px;
     overflow: hidden;
     background: linear-gradient(135deg, #008080 0%, #00A0A0 25%, #008080 50%, #006060 75%, #008080 100%);
     background-size: 400% 400%;
@@ -351,9 +346,9 @@ iframe {
 }
 
 .desktop-icon {
+    position: absolute;
     width: 103px;
     height: 127px;
-    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     align-items: center;

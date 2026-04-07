@@ -1,50 +1,57 @@
 # Implementation Plan
 
 [Overview]
-This plan implements five specific improvements to the Retro Desktop OS project: adding support for complex multi-file pages, fixing broken internal page links, enhancing the browser window with maximize button and fixed toolbar, polishing the boot sequence display, and adjusting Solmerica Online window sizes for each screen. The changes maintain backward compatibility, preserve the retro aesthetic, and ensure all existing functionality remains intact.
+Establish a robust, persistent desktop icons system to prevent recurring issues with dragging, stacking, click triggering, and positioning. The system will use localStorage for persistence, collision detection in snapToGrid, drag threshold to prevent click on drop, and absolute positioning with 128px grid to avoid overlap.
 
-The project is a vanilla JS/HTML/CSS Windows 95 emulation with draggable windows, taskbar, and apps. Pages are currently inline HTML strings in js/app.js loadPage function. Complex page support adds fetch for pages/${pageName}/index.html while keeping inline templates. Link fixes ensure onclick="loadPage" works reliably. Browser improvements add maximize functionality and ensure toolbar sticks. Boot sequence gets larger, centered text in a subtle textbox. Solmerica screens get precise sizing without layout breaks.
-
-Approach: Targeted JS/CSS modifications using replace_in_file. Verify each change preserves window management, Solmerica, desktop icons. Test with browser interactions and resize.
+The current system uses absolute positioning with 64px grid (too small for 103px icons, causes overlap), drag threshold but click still fires sometimes, no persistence (positions reset on reload). This plan creates a data-driven system with Icon objects, load/save to localStorage, collision-aware snapping, reliable drag/click separation.
 
 [Types]
-No new types or data structures required; leverage existing window/app interfaces and page content strings.
+Define Icon interface with name, x, y, action, iconPath.
+
+Icon = {
+  name: string,
+  x: number,
+  y: number,
+  action: function,
+  iconPath: string
+}
+
+icons: Icon[]
 
 [Files]
-Modify 4 files:
-- js/app.js: Update loadPage for fetch support, add maximize to browser, move listeners.
-- css/style.css: Boot screen textbox styles, browser maximize button.
-- js/apps/solmerica.js: Set window sizes per screen.
-- No new files; no deletions.
+Modify 2 files:
+- js/app.js: Add icons array, loadIcons/saveIcons functions, modify createDesktopIcon to use data, update snapToGrid with collision, initDesktop loads from storage.
+- css/style.css: Confirm .desktop position:relative, .desktop-icon position:absolute width:103px height:127px.
+
+No new files.
 
 [Functions]
 Modify 4 functions:
-- js/app.js loadPage(pageName): Add check for pages/${pageName}/index.html, fetch if exists, fallback to inline.
-- js/app.js openBrowser(url): Add maximize button listener, ensure toolbar sticky.
-- js/app.js initBootSequence(): Update biosText styles for larger font, centered box.
-- js/apps/solmerica.js buildScreen(): Set windowEl.style.width/height per screen.
-
-No new functions; no removals.
+- js/app.js createDesktopIcon(name, x, y, action, iconPath): Use provided x/y, add to icons array, saveIcons().
+- js/app.js snapToGrid(element): Check for collision with other icons, find free grid slot if overlap, snap to 128px grid.
+- js/app.js initDesktop(): Load icons from localStorage, createDesktopIcon for each.
+- New js/app.js loadIcons(): Get from localStorage or default icons array.
+- New js/app.js saveIcons(): JSON.stringify icons to localStorage.
 
 [Classes]
-No class changes; CSS class additions only (.boot-textbox, .browser-maximize).
+No class changes.
 
 [Dependencies]
-No new dependencies; vanilla JS/CSS only.
+No new dependencies.
 
 [Testing]
 Manual verification:
-1. Load home, click sidebar link → navigates to about.
-2. Open browser, maximize → fills screen, toolbar pinned, scrollbar works.
-3. Boot sequence → larger centered text.
-4. Solmerica: Welcome 640x570, Connecting 700x455, Login 433x274.
-5. Complex page: Create pages/test/index.html, loadPage('test') → fetches.
-6. Resize windows, check apps adapt.
+1. Reload page - icons positions persist.
+2. Drag icon - moves, snaps to 128px grid, no overlap with others.
+3. Drag to overlap position - snaps to next free slot.
+4. Drag short distance - click triggers action.
+5. Drag long distance - no click, snaps without stack.
+6. Resize window - icons clamp to bounds.
 
 [Implementation Order]
-1. js/app.js: loadPage fetch support.
-2. css/style.css: Boot textbox, browser maximize.
-3. js/app.js: Browser maximize listener, toolbar sticky confirm.
-4. js/apps/solmerica.js: Screen sizes.
-5. Test all, including links, boot, Solmerica.
-6. General review: taskbar, icons, no regressions.
+1. js/app.js: Add icons array with default positions/actions.
+2. js/app.js: Add loadIcons/saveIcons functions.
+3. js/app.js: Modify initDesktop to load and create icons.
+4. js/app.js: Modify createDesktopIcon to save after create.
+5. js/app.js: Update snapToGrid with 128px grid and collision detection.
+6. Test all, including reload persistence, drag/click separation, no stacking.
