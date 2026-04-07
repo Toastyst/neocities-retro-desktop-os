@@ -1,0 +1,84 @@
+<div class="geocities-page">
+    <div class="geocities-header">📝 Guestbook - Sign My Digital Guestbook! 📝</div>
+    <div class="geocities-marquee">★★★ LEAVE YOUR MARK ★★★ Sign here and be immortalized! ★★★</div>
+
+    <table class="geocities-table">
+        <tr>
+            <td colspan="2">
+                <center>
+                    <font size="+2"><b>Welcome to My Guestbook!</b></font>
+                    <br><br>
+                    <i>"Leave your thoughts for future visitors to see!"</i>
+                </center>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <h2>✍️ Sign the Guestbook</h2>
+                <form id="guestbook-form">
+                    <table class="geocities-table">
+                        <tr>
+                            <td><b>Name:</b></td>
+                            <td><input type="text" id="guest-name" style="width: 100%;"></td>
+                        </tr>
+                        <tr>
+                            <td><b>Email:</b></td>
+                            <td><input type="email" id="guest-email" style="width: 100%;"></td>
+                        </tr>
+                        <tr>
+                            <td><b>Homepage:</b></td>
+                            <td><input type="url" id="guest-url" style="width: 100%;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <b>Message:</b><br>
+                                <textarea id="guest-message" rows="4" style="width: 100%;"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <button type="button" onclick="addGuestbookEntry()" style="background: #C0C0C0; border: 2px outset #FFFFFF; padding: 4px 12px;">Sign Guestbook!</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+            <td width="50%">
+                <div class="geocities-sidebar">
+                    <center><b>Guestbook Rules</b></center>
+                    <hr>
+                    • Be respectful<br>
+                    • No spam please<br>
+                    • Include your name<br>
+                    • Keep it family-friendly<br>
+                    • Have fun! 😊
+                    <br><br>
+                    <b>Total Signatures:</b><br>
+                    <span id="signature-count">15</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <h2>📖 Recent Entries</h2>
+    <div id="guestbook-entries">
+        <div class="geocities-guestbook">
+            <b>WebSurfer99</b> from <a href="https://example.com">CoolSite.com</a><br>
+            <i>03/15/2024</i><br>
+            "This site is totally radical! Keep up the awesome work!"<br><br>
+            <b>RetroGamer</b> from <a href="https://example.com">GameZone.net</a><br>
+            <i>03/10/2024</i><br>
+            "Love the retro gaming section! Any chance you'll add more arcade games?"<br><br>
+            <b>CarEnthusiast</b> from <a href="https://example.com">AutoBlog.org</a><br>
+            <i>03/05/2024</i><br>
+            "Your Jeep XJ page is awesome! I've got a similar setup on my Cherokee."
+        </div>
+    </div>
+
+    <center>
+        <font size="-1" color="#808080">
+            <a href="#" onclick="loadPage('home')">← Back to Home</a> |
+            <a href="#" onclick="loadPage('about')">About the Author</a>
+        </font>
+    </center>
+</div>

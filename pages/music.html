@@ -1,0 +1,87 @@
+<div class="geocities-page">
+    <div class="geocities-header">🎵 Music Collection - Listen to the Sounds! 🎵</div>
+    <div class="geocities-marquee">★★★ MIDI CENTRAL ★★★ 90s music that takes you back! ★★★</div>
+
+    <table class="geocities-table">
+        <tr>
+            <td colspan="2">
+                <center>
+                    <font size="+2"><b>🎼 MIDI Music Archive 🎼</b></font>
+                    <br><br>
+                    <i>"Relive the golden age of computer music!"</i>
+                </center>
+            </td>
+        </tr>
+        <tr>
+            <td width="60%">
+                <h2>🎹 Featured Tracks</h2>
+                <div id="music-player">
+                    <div style="border: 2px outset #FFFFFF; padding: 10px; background: #C0C0C0; margin-bottom: 20px;">
+                        <b>Now Playing:</b> <span id="current-track">Super Mario World Theme</span><br>
+                        <audio id="midi-player" controls style="width: 100%; margin: 10px 0;">
+                            Your browser doesn't support audio playback.
+                        </audio>
+                        <button onclick="playRandomTrack()" style="background: #C0C0C0; border: 2px outset #FFFFFF; padding: 4px 12px;">🎲 Random Track</button>
+                    </div>
+                </div>
+
+                <h2>📀 Track List</h2>
+                <div id="track-list">
+                    <div class="geocities-guestbook" style="margin-bottom: 10px;">
+                        <b>🎮 Video Game Themes</b><br>
+                        <a href="#" onclick="playTrack('mario.mid')">Super Mario World</a> |
+                        <a href="#" onclick="playTrack('zelda.mid')">The Legend of Zelda</a> |
+                        <a href="#" onclick="playTrack('sonic.mid')">Sonic the Hedgehog</a> |
+                        <a href="#" onclick="playTrack('tetris.mid')">Tetris</a> |
+                        <a href="#" onclick="playTrack('pacman.mid')">Pac-Man</a>
+                    </div>
+
+                    <div class="geocities-guestbook" style="margin-bottom: 10px;">
+                        <b>🎵 Popular Songs</b><br>
+                        <a href="#" onclick="playTrack('careless.mid')">Careless Whisper</a> |
+                        <a href="#" onclick="playTrack('billie.mid')">Billie Jean</a> |
+                        <a href="#" onclick="playTrack('stairway.mid')">Stairway to Heaven</a> |
+                        <a href="#" onclick="playTrack('hotel.mid')">Hotel California</a> |
+                        <a href="#" onclick="playTrack('bohemian.mid')">Bohemian Rhapsody</a>
+                    </div>
+
+                    <div class="geocities-guestbook" style="margin-bottom: 10px;">
+                        <b>🎸 Classic Rock</b><br>
+                        <a href="#" onclick="playTrack('smoke.mid')">Smoke on the Water</a> |
+                        <a href="#" onclick="playTrack('more.mid')">We Want More</a> |
+                        <a href="#" onclick="playTrack('highway.mid')">Highway to Hell</a> |
+                        <a href="#" onclick="playTrack('back.mid')">Back in Black</a>
+                    </div>
+                </div>
+            </td>
+            <td width="40%">
+                <div class="geocities-sidebar">
+                    <center><b>Music Library</b></center>
+                    <hr>
+                    <b>Total Tracks:</b> 47<br>
+                    <b>Genres:</b> Game, Pop, Rock<br>
+                    <b>Format:</b> MIDI<br>
+                    <b>Player:</b> Built-in browser<br>
+                    <br>
+                    <b>Download Collection:</b><br>
+                    <a href="#" onclick="downloadFile('midi-collection.zip')">📥 Download All MIDI Files</a>
+                </div>
+
+                <h3>🎧 Listening Tips</h3>
+                <ul>
+                    <li>Use headphones for best quality</li>
+                    <li>MIDI sounds different on each computer</li>
+                    <li>Some tracks may not play in all browsers</li>
+                    <li>Download the collection for offline listening</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+    <center>
+        <font size="-1" color="#808080">
+            <a href="#" onclick="loadPage('home')">← Back to Home</a> |
+            <a href="#" onclick="loadPage('downloads')">More Downloads</a>
+        </font>
+    </center>
+</div>

@@ -1,0 +1,91 @@
+<div class="geocities-page">
+    <div class="geocities-header">😄 Meme Generator - Create Funny Images! 😄</div>
+    <div class="geocities-marquee">★★★ MEME CENTRAL ★★★ Make your own funny pictures! ★★★</div>
+
+    <table class="geocities-table">
+        <tr>
+            <td colspan="2">
+                <center>
+                    <font size="+2"><b>🎨 Meme Generator 🎨</b></font>
+                    <br><br>
+                    <i>"Turn boring images into hilarious memes!"</i>
+                </center>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <h2>🖼️ Create Your Meme</h2>
+                <div id="meme-generator">
+                    <table class="geocities-table">
+                        <tr>
+                            <td colspan="2">
+                                <b>Select Template:</b><br>
+                                <select id="meme-template" style="width: 100%;">
+                                    <option value="distracted-boyfriend">Distracted Boyfriend</option>
+                                    <option value="this-is-fine">This Is Fine</option>
+                                    <option value="success-kid">Success Kid</option>
+                                    <option value="doge">Doge</option>
+                                    <option value="grumpy-cat">Grumpy Cat</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Top Text:</b></td>
+                            <td><input type="text" id="top-text" placeholder="TOP TEXT" style="width: 100%;"></td>
+                        </tr>
+                        <tr>
+                            <td><b>Bottom Text:</b></td>
+                            <td><input type="text" id="bottom-text" placeholder="BOTTOM TEXT" style="width: 100%;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <button onclick="generateMeme()" style="background: #C0C0C0; border: 2px outset #FFFFFF; padding: 4px 12px;">Generate Meme!</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h2>💾 Save & Share</h2>
+                <button onclick="downloadMeme()" style="background: #C0C0C0; border: 2px outset #FFFFFF; padding: 4px 12px;">📥 Download Meme</button>
+                <button onclick="shareMeme()" style="background: #C0C0C0; border: 2px outset #FFFFFF; padding: 4px 12px;">📤 Share on Web</button>
+            </td>
+            <td width="50%">
+                <h2>🖼️ Your Meme Preview</h2>
+                <div id="meme-preview" style="border: 2px outset #FFFFFF; min-height: 300px; background: #C0C0C0; display: flex; align-items: center; justify-content: center; color: #808080;">
+                    Select a template and add text to generate your meme!
+                </div>
+
+                <h2>📚 Popular Templates</h2>
+                <div class="geocities-guestbook">
+                    <b>Classic Memes:</b><br>
+                    • Distracted Boyfriend<br>
+                    • This Is Fine<br>
+                    • Success Kid<br>
+                    • One Does Not Simply<br>
+                    • Philosoraptor<br>
+                    • Expanding Brain<br>
+                    • Drake Hotline Bling<br>
+                    • Mocking SpongeBob
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="geocities-guestbook">
+        <center><b>Meme Gallery</b></center>
+        <hr>
+        <center>
+            Check out memes created by other visitors:<br>
+            <img src="https://i.imgur.com/placeholder.gif" alt="Sample Meme 1" style="border: 1px solid #000; margin: 5px;">
+            <img src="https://i.imgur.com/placeholder.gif" alt="Sample Meme 2" style="border: 1px solid #000; margin: 5px;">
+            <img src="https://i.imgur.com/placeholder.gif" alt="Sample Meme 3" style="border: 1px solid #000; margin: 5px;">
+        </center>
+    </div>
+
+    <center>
+        <font size="-1" color="#808080">
+            <a href="#" onclick="loadPage('home')">← Back to Home</a> |
+            <a href="#" onclick="loadPage('downloads')">Download Templates</a>
+        </font>
+    </center>
+</div>

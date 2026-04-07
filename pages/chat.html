@@ -1,0 +1,81 @@
+<div class="geocities-page">
+    <div class="geocities-header">💬 Chat Room - Join the Conversation! 💬</div>
+    <div class="geocities-marquee">★★★ WELCOME TO THE CHAT ★★★ Talk with other visitors! ★★★</div>
+
+    <table class="geocities-table">
+        <tr>
+            <td colspan="2">
+                <center>
+                    <font size="+2"><b>🌐 Live Chat Room 🌐</b></font>
+                    <br><br>
+                    <i>"Connect with fellow retro enthusiasts from around the world!"</i>
+                </center>
+            </td>
+        </tr>
+        <tr>
+            <td width="70%">
+                <h2>💭 Chat Messages</h2>
+                <div id="chat-messages" style="height: 300px; border: 2px inset #C0C0C0; background: #FFFFFF; padding: 10px; overflow-y: auto; font-family: monospace;">
+                    <div><b>System:</b> Welcome to Toastyst's Chat Room!</div>
+                    <div><b>RetroGamer:</b> Hey everyone! Loving the new gaming section.</div>
+                    <div><b>CarFan:</b> That Jeep XJ page is awesome! What's your favorite trail?</div>
+                    <div><b>WebSurfer:</b> This site brings back so many memories of the 90s web!</div>
+                    <div><b>MusicLover:</b> Anyone else here for the MIDI collection?</div>
+                    <div><b>Toastyst:</b> Thanks for visiting everyone! Feel free to chat about retro gaming, cars, or anything else!</div>
+                </div>
+
+                <h2>✍️ Send a Message</h2>
+                <table class="geocities-table">
+                    <tr>
+                        <td><b>Your Name:</b></td>
+                        <td><input type="text" id="chat-name" value="Anonymous" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <b>Message:</b><br>
+                            <textarea id="chat-message" rows="3" style="width: 100%;" placeholder="Type your message here..."></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button onclick="sendChatMessage()" style="background: #C0C0C0; border: 2px outset #FFFFFF; padding: 4px 12px;">Send Message</button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td width="30%">
+                <div class="geocities-sidebar">
+                    <center><b>Chat Room Rules</b></center>
+                    <hr>
+                    • Be respectful<br>
+                    • No spam or flooding<br>
+                    • Keep it family-friendly<br>
+                    • Have fun chatting!<br>
+                    • Use appropriate language<br>
+                    <br>
+                    <b>Online Users:</b><br>
+                    <span id="online-count">7</span> people online<br>
+                    <small>Toastyst, RetroGamer,<br>CarFan, WebSurfer,<br>MusicLover, Guest1,<br>Guest2</small>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="geocities-guestbook">
+        <center><b>Chat Topics</b></center>
+        <hr>
+        Popular discussion topics:<br>
+        • Retro gaming tips<br>
+        • Car modifications<br>
+        • 90s web design<br>
+        • MIDI music<br>
+        • General chat
+    </div>
+
+    <center>
+        <font size="-1" color="#808080">
+            <a href="#" onclick="loadPage('home')">← Back to Home</a> |
+            <a href="#" onclick="loadPage('guestbook')">Sign Guestbook</a>
+        </font>
+    </center>
+</div>

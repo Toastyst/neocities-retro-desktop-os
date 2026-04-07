@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Desktop OS</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="desktop" id="desktop">
+        <!-- Desktop icons will be added here dynamically -->
+
+
+    </div>
+
+    <div id="boot-screen" class="boot-screen">
+        <div class="bios-text"></div>
+    </div>
+
+    <div class="taskbar">
+        <button class="start-button">Start</button>
+        <div class="taskbar-windows" id="taskbar-windows">
+            <!-- Taskbar window buttons will be added here -->
+        </div>
+        <div id="taskbar-clock">12:00 PM</div>
+    </div>
+
+    <!-- Audio preloads -->
+    <audio id="boot-audio" preload="auto"><source src="sounds/boot.wav" type="audio/wav"></audio>
+    <audio id="modem-audio" preload="auto"><source src="sounds/modem-handshake.mp3" type="audio/mpeg"></audio>
+    <audio id="hdd-audio" preload="auto" loop><source src="sounds/hdd-fan-loop.mp3" type="audio/mpeg"></audio>
+    <audio id="floppy-audio" preload="auto"><source src="sounds/floppy-read.wav" type="audio/wav"></audio>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

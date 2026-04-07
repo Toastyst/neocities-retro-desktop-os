@@ -1,0 +1,610 @@
+/* Basic reset and desktop setup */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'MS Sans Serif', 'Chicago', sans-serif;
+    background: #008080;
+    overflow: hidden;
+    height: 100vh;
+    user-select: none;
+}
+
+.desktop {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 17px 25px;
+    padding: 30px;
+    height: calc(100vh - 40px);
+    overflow: hidden;
+    background: linear-gradient(135deg, #008080 0%, #00A0A0 25%, #008080 50%, #006060 75%, #008080 100%);
+    background-size: 400% 400%;
+    animation: desktopShift 20s ease-in-out infinite;
+}
+
+@keyframes desktopShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.taskbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(90deg, #C0C0C0 0%, #D0D0D0 50%, #C0C0C0 100%);
+    border-top: 2px inset #FFFFFF;
+    border-bottom: 2px outset #808080;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-shadow: inset 0 1px 0 #FFFFFF, inset 0 -1px 0 #808080;
+}
+
+.start-button {
+    background: linear-gradient(135deg, #C0C0C0 0%, #D0D0D0 50%, #B0B0B0 100%);
+    border: 2px outset #FFFFFF;
+    border-right: 2px outset #808080;
+    border-bottom: 2px outset #808080;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+}
+
+.start-button:active {
+    border: 2px inset #808080;
+    border-right: 2px inset #FFFFFF;
+    border-bottom: 2px inset #FFFFFF;
+    box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #FFFFFF;
+}
+
+.taskbar-windows {
+    flex: 1;
+    display: flex;
+    margin-left: 10px;
+}
+
+.taskbar-window {
+    background: linear-gradient(90deg, #C0C0C0 0%, #D0D0D0 100%);
+    border: 1px solid #808080;
+    border-top: 1px solid #FFFFFF;
+    border-left: 1px solid #FFFFFF;
+    margin: 0 2px;
+    padding: 2px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+}
+
+.taskbar-window:hover {
+    background: linear-gradient(90deg, #E0E0E0 0%, #F0F0F0 100%);
+}
+
+.taskbar-window.active {
+    background: linear-gradient(90deg, #000080 0%, #0000A0 100%);
+    color: white;
+    border: 1px solid #000000;
+    box-shadow: inset 1px 1px 0 #404080, inset -1px -1px 0 #000040;
+}
+
+#taskbar-clock {
+    font-size: 11px;
+    color: white;
+    padding: 2px 8px;
+}
+
+.window {
+    position: absolute;
+    background: linear-gradient(135deg, #C0C0C0 0%, #D0D0D0 50%, #B0B0B0 100%);
+    border: 2px outset #FFFFFF;
+    border-right: 2px outset #808080;
+    border-bottom: 2px outset #808080;
+    box-shadow: 3px 3px 6px rgba(0,0,0,0.7), inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+    min-width: 200px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.window-titlebar {
+    background: linear-gradient(90deg, #000080 0%, #0000FF 50%, #000080 100%);
+    color: white;
+    padding: 2px 4px;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: move;
+    border-bottom: 1px solid #000000;
+    box-shadow: inset 0 1px 0 #404080;
+}
+
+.window-titlebar span {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.window-controls {
+    margin-left: auto;
+    display: flex;
+    gap: 2px;
+}
+
+.window-control {
+    width: 16px;
+    height: 14px;
+    background: linear-gradient(135deg, #C0C0C0 0%, #D0D0D0 100%);
+    border: 1px outset #FFFFFF;
+    border-right: 1px outset #808080;
+    border-bottom: 1px outset #808080;
+    cursor: pointer;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+}
+
+.window-control:hover {
+    background: linear-gradient(135deg, #E0E0E0 0%, #F0F0F0 100%);
+}
+
+.window-control:active {
+    border: 1px inset #808080;
+    border-right: 1px inset #FFFFFF;
+    border-bottom: 1px inset #FFFFFF;
+    box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #FFFFFF;
+}
+
+.window-content {
+    flex: 1;
+    background: #FFFFFF;
+    border: 1px inset #808080;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+}
+
+iframe {
+    height: 100%;
+    width: 100%;
+    flex-grow: 1;
+    display: block;
+}
+
+/* Apply to all windows to ensure consistent behavior */
+.window .window-content {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important; /* Vertical centering */
+  align-items: center !important;     /* Horizontal centering */
+  flex-grow: 1 !important;            /* Allow vertical growth */
+  height: 100% !important;            /* Force fill parent */
+  overflow: hidden !important;        /* Prevent default scrollbars */
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.window .window-content iframe {
+  width: 100% !important;             /* Scale to fill container */
+  height: 100% !important;            /* Scale to fill container */
+  display: block !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Fix for window freezing: pointer-events are disabled ONLY during resizing */
+.window.resizing iframe {
+  pointer-events: none !important;
+}
+
+.paint-window .window-content {
+    overflow: auto;
+    padding-top: 40px;
+}
+
+.solitaire-window .window-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.browser-window .window-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.browser-toolbar {
+    background: linear-gradient(90deg, #C0C0C0 0%, #D0D0D0 100%);
+    border-bottom: 1px inset #808080;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: inset 0 1px 0 #FFFFFF, inset 0 -1px 0 #808080;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.browser-button {
+    width: 24px;
+    height: 20px;
+    background: linear-gradient(135deg, #C0C0C0 0%, #D0D0D0 100%);
+    border: 1px outset #FFFFFF;
+    border-right: 1px outset #808080;
+    border-bottom: 1px outset #808080;
+    cursor: pointer;
+    font-size: 12px;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+}
+
+.browser-button:hover {
+    background: linear-gradient(135deg, #E0E0E0 0%, #F0F0F0 100%);
+}
+
+.browser-button:active {
+    border: 1px inset #808080;
+    border-right: 1px inset #FFFFFF;
+    border-bottom: 1px inset #FFFFFF;
+    box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #FFFFFF;
+}
+
+.address-bar {
+    flex: 1;
+    height: 20px;
+    border: 1px inset #808080;
+    padding: 0 4px;
+    font-size: 12px;
+    background: #FFFFFF;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+}
+
+.browser-content {
+    flex: 1;
+    background: #FFFFFF;
+    padding: 10px;
+    font-family: 'Times New Roman', serif;
+    overflow: auto;
+}
+
+/* Geocities-style page layouts */
+.geocities-page {
+    background: #FFFFFF;
+    color: #000000;
+}
+
+.geocities-header {
+    background: linear-gradient(90deg, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF);
+    background-size: 600% 100%;
+    animation: rainbow 3s linear infinite;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 0px #000000;
+    border: 2px outset #FFFFFF;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.geocities-marquee {
+    background: #000000;
+    color: #FFFF00;
+    padding: 5px;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: bold;
+    border: 2px outset #FFFFFF;
+}
+
+.geocities-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+.geocities-table td {
+    border: 2px inset #808080;
+    padding: 8px;
+    background: #C0C0C0;
+}
+
+.geocities-sidebar {
+    float: right;
+    width: 150px;
+    background: #E0E0E0;
+    border: 2px outset #FFFFFF;
+    padding: 10px;
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.geocities-guestbook {
+    background: #FFFFCC;
+    border: 2px inset #808080;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.desktop-icon {
+    width: 103px;
+    height: 127px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.icon-image {
+    width: 95px;
+    height: 95px;
+    margin-bottom: 5px;
+    background: linear-gradient(135deg, #C0C0C0 0%, #D0D0D0 50%, #B0B0B0 100%);
+    border: 1px outset #FFFFFF;
+    border-right: 1px outset #808080;
+    border-bottom: 1px outset #808080;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.5), inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+}
+
+.icon-image:hover {
+    background: linear-gradient(135deg, #E0E0E0 0%, #F0F0F0 50%, #D0D0D0 100%);
+}
+
+.icon-label {
+    font-size: 14px;
+    text-align: center;
+    width: 110px;
+    color: #fff;
+    /* Clean look */
+    text-shadow: none;
+    background: transparent;
+    pointer-events: none;
+}
+
+/* Boot sequence */
+.boot-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000;
+    color: #FFFFFF;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+}
+
+.bios-text {
+    white-space: pre;
+}
+
+.boot-textbox {
+    width: 800px;
+    height: 800px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow: hidden;
+    background: transparent;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.2;
+    text-align: left;
+    white-space: pre;
+}
+
+/* Context menu */
+.context-menu {
+    position: absolute;
+    background: #C0C0C0;
+    border: 2px outset #FFFFFF;
+    border-right: 2px outset #808080;
+    border-bottom: 2px outset #808080;
+    padding: 2px;
+    z-index: 1000;
+    min-width: 120px;
+}
+
+.context-menu div {
+    padding: 4px 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.context-menu div:hover {
+    background: #E0E0E0;
+    border: 1px inset #808080;
+}
+
+.context-menu hr {
+    margin: 2px 0;
+    border: none;
+    border-top: 1px solid #808080;
+}
+
+/* Start menu */
+.start-menu {
+    position: absolute;
+    background: #C0C0C0;
+    border: 2px outset #FFFFFF;
+    border-right: 2px outset #808080;
+    border-bottom: 2px outset #808080;
+    padding: 2px;
+    z-index: 1000;
+    min-width: 150px;
+}
+
+.start-menu .menu-item {
+    padding: 4px 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.start-menu .menu-item:hover {
+    background: #000080;
+    color: white;
+    border: 1px inset #808080;
+}
+
+.start-menu hr {
+    margin: 2px 0;
+    border: none;
+    border-top: 1px solid #808080;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .desktop {
+        height: calc(100vh - 60px);
+    }
+
+    .taskbar {
+        height: 60px;
+        flex-direction: column;
+        padding: 5px;
+    }
+
+    .taskbar-windows {
+        margin-left: 0;
+        margin-top: 5px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .window {
+        min-width: 90vw;
+        min-height: 60vh;
+        left: 5vw !important;
+        top: 5vh !important;
+    }
+
+    .browser-toolbar {
+        flex-wrap: wrap;
+        gap: 2px;
+    }
+
+    .address-bar {
+        min-width: 200px;
+    }
+}
+
+/* Solmerica styles */
+.solmerica-window .window-content {
+    position: relative;
+    background: linear-gradient(90deg, transparent 49%, rgba(0,0,0,0.1) 50%, transparent 51%), repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sol-sidebar {
+    height: 100%;
+    width: 200px;
+    background-size: cover;
+}
+
+.sol-logo {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.sol-dropdown {
+    border: 1px inset #808080;
+    background: #FFFFFF;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+    padding: 2px;
+}
+
+select option:selected {
+    background: blue;
+    color: white;
+}
+
+.sol-frame {
+    border: 1px outset #FFFFFF;
+    border-right: 1px outset #808080;
+    border-bottom: 1px outset #808080;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+    margin: 0 5px;
+}
+
+.sol-frame.active {
+    border: 1px inset #808080;
+    border-right: 1px inset #FFFFFF;
+    border-bottom: 1px inset #FFFFFF;
+    box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #FFFFFF;
+}
+
+.sol-input {
+    border: 1px inset #808080;
+    background: #FFFFFF;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+    padding: 2px;
+}
+
+.sol-button {
+    background: linear-gradient(135deg, #C0C0C0 0%, #D0D0D0 100%);
+    border: 1px outset #FFFFFF;
+    border-right: 1px outset #808080;
+    border-bottom: 1px outset #808080;
+    box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+
+.sol-button:hover {
+    background: linear-gradient(135deg, #E0E0E0 0%, #F0F0F0 100%);
+}
+
+.sol-button:active {
+    border: 1px inset #808080;
+    border-right: 1px inset #FFFFFF;
+    border-bottom: 1px inset #FFFFFF;
+    box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #FFFFFF;
+}
+
+/* Calculator display fix */
+.calculator-window .display {
+    overflow: hidden;
+    font-size: 14px;
+    word-wrap: break-word;
+    max-width: 100%;
+}

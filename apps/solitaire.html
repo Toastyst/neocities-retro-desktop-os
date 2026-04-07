@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solitaire</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #008000; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        canvas { border: 2px inset #808080; background: #00AA00; display: block; margin: 0 auto; }
+        .score { color: white; font-size: 14px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="score">Score: <span id="score">0</span> | Moves: <span id="moves">0</span></div>
+    <canvas id="solitaire-canvas" width="600" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('solitaire-canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const movesEl = document.getElementById('moves');
+
+        let score = 0;
+        let moves = 0;
+
+        // Simple card representation
+        function drawCard(x, y, suit, value, faceUp = true) {
+            ctx.fillStyle = faceUp ? '#FFFFFF' : '#000080';
+            ctx.fillRect(x, y, 60, 80);
+            ctx.strokeStyle = '#000000';
+            ctx.strokeRect(x, y, 60, 80);
+
+            if (faceUp) {
+                ctx.fillStyle = suit === 'hearts' || suit === 'diamonds' ? '#FF0000' : '#000000';
+                ctx.font = '12px Arial';
+                ctx.fillText(value, x + 5, y + 15);
+                // Simple suit symbol
+                const symbol = {hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠'}[suit];
+                ctx.fillText(symbol, x + 40, y + 15);
+            }
+        }
+
+        // Initialize game
+        function initGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw tableau (7 columns)
+            for (let col = 0; col < 7; col++) {
+                for (let row = 0; row <= col; row++) {
+                    const x = 50 + col * 80;
+                    const y = 50 + row * 20;
+                    drawCard(x, y, ['hearts', 'diamonds', 'clubs', 'spades'][Math.floor(Math.random() * 4)],
+                           ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'][Math.floor(Math.random() * 13)],
+                           row === col); // Face up only top card
+                }
+            }
+
+            // Draw foundations (4 piles)
+            for (let i = 0; i < 4; i++) {
+                ctx.strokeRect(400 + i * 80, 50, 60, 80);
+            }
+
+            // Draw stock
+            drawCard(50, 300, 'spades', 'K', false);
+
+            scoreEl.textContent = score;
+            movesEl.textContent = moves;
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Simple click detection - increment moves
+            moves++;
+            score += 10;
+            initGame();
+        });
+
+        // Resize handling for adaptive cards
+        function resizeGame() {
+            const canvas = document.getElementById('solitaire-canvas');
+            const container = canvas.parentElement;
+            const scaleX = container.clientWidth / 600;
+            const scaleY = container.clientHeight / 400;
+            const scale = Math.min(scaleX, scaleY); // Allow scaling up to fill space
+
+            canvas.style.transform = `scale(${scale})`;
+            canvas.style.transformOrigin = 'top center';
+            canvas.style.marginTop = '10px';
+        }
+
+        window.addEventListener('resize', resizeGame);
+        resizeGame(); // Initial call
+
+        initGame();
+    </script>
+</body>
+</html>
