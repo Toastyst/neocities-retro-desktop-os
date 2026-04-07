@@ -18,7 +18,7 @@ A fully functional 1995 Windows 3.0 / early AOL-era desktop emulation built with
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/neocities-retro-desktop-os.git
+git clone https://github.com/Toastyst/neocities-retro-desktop-os.git
 cd neocities-retro-desktop-os
 ```
 
