@@ -13,41 +13,221 @@ let zIndexCounter = 1;      // Z-index counter for window stacking
 let draggedIcon = null;     // Currently dragged desktop icon
 let isDraggingIcon = false; // Whether an icon is being dragged
 let dragStartX, dragStartY, dragStartLeft, dragStartTop;
+let lastMouseX = 0;
+let lastMouseY = 0;
+let clickOffsetX, clickOffsetY;
+let justDragged = false;
+let hasDragged = false;
 
-// Snap to grid function
-function snapToGrid(element) {
-    const left = parseInt(element.style.left);
-    const top = parseInt(element.style.top);
-    // Clamp to desktop bounds (no margin, icon size 96px, account for taskbar)
-    const clampedLeft = Math.max(0, Math.min(left, window.innerWidth - 96));
-    const clampedTop = Math.max(0, Math.min(top, window.innerHeight - 136));
-    element.style.left = Math.floor(clampedLeft / 64) * 64 + 'px';
-    element.style.top = Math.floor(clampedTop / 64) * 64 + 'px';
+function snapToGridCursor(element) {
+    const desktop = document.getElementById('desktop');
+    const desktopRect = desktop.getBoundingClientRect();
+    const targetLeft = parseInt(element.style.left);
+    const targetTop = parseInt(element.style.top);
+    const gridSize = 128;
+    const snappedLeft = Math.round((targetLeft - 30) / gridSize) * gridSize + 30;
+    const snappedTop = Math.round((targetTop - 30) / gridSize) * gridSize + 30;
+    const clampedLeft = Math.max(30, Math.min(snappedLeft, desktopRect.width - 103));
+    const clampedTop = Math.max(30, Math.min(snappedTop, desktopRect.height - 95));
+    element.style.left = clampedLeft + 'px';
+    element.style.top = clampedTop + 'px';
 }
 
 // Browser System
 let browserHistory = ['home'];  // Browser navigation history
 let historyIndex = 0;           // Current position in history
 
-// Boot Sequence
-let bootSequence = {
-    steps: [
-        "IBM Personal Computer AT\nVersion A04  01/10/86\n\n",
-        "Performing Power-On Self Test (POST)...\n",
-        "CPU: Intel Pentium III 500MHz - OK\n",
-        "Memory Test: 128MB RAM - OK\n",
-        "Hard Drive: 6GB IDE - OK\n",
-        "Floppy Drive: 1.44MB - OK\n",
-        "CD-ROM: 52x - OK\n",
-        "Video: VGA Compatible - OK\n",
-        "Keyboard: Detected\n",
-        "Mouse: Detected\n",
-        "Serial Ports: COM1, COM2 - OK\n",
-        "Parallel Ports: LPT1 - OK\n\n",
-        "Loading Windows 95...\n\n"
-    ],
-    timings: [500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 2000],
-    sounds: ['', '', '', '', '', '', '', '', '', '', '', '', 'boot.wav']
+// Boot Sequence Configuration
+const BOOT_SEQUENCE_CONFIG = {
+    // Timing constants for different types of operations
+    TIMINGS: {
+        FAST: 200,
+        NORMAL: 400,
+        SLOW: 800,
+        BIOS_HEADER: 300,
+        POST_START: 500,
+        COMPONENT_CHECK: 350,
+        FINAL_LOAD: 1500
+    },
+
+    // Sound effects for different boot phases
+    SOUNDS: {
+        BIOS_BEEP: 'bios-beep.wav',
+        POST_COMPLETE: 'post-complete.wav',
+        HDD_ACCESS: 'hdd-access.wav',
+        BOOT_SUCCESS: 'boot.wav'
+    }
+};
+
+// Boot Sequence Factory - Creates different boot sequences based on configuration
+function createBootSequence(options = {}) {
+    const config = {
+        speed: options.speed || 'normal', // 'fast', 'normal', 'detailed'
+        os: options.os || 'windows95', // 'windows95', 'windows98', 'dos'
+        hardware: options.hardware || 'standard', // 'standard', 'gaming', 'minimal'
+        ...options
+    };
+
+    // Speed multipliers
+    const speedMultipliers = {
+        fast: 0.5,
+        normal: 1.0,
+        detailed: 1.5
+    };
+    const multiplier = speedMultipliers[config.speed];
+
+    // Base hardware configurations
+    const hardwareConfigs = {
+        standard: {
+            cpu: "Intel Pentium III 500MHz",
+            ram: "128MB RAM",
+            hdd: "6GB IDE",
+            cdrom: "52x",
+            video: "VGA Compatible"
+        },
+        gaming: {
+            cpu: "Intel Pentium III 600MHz",
+            ram: "256MB RAM",
+            hdd: "20GB IDE",
+            cdrom: "56x",
+            video: "VESA Compatible"
+        },
+        minimal: {
+            cpu: "Intel 486DX 66MHz",
+            ram: "16MB RAM",
+            hdd: "500MB IDE",
+            cdrom: "4x",
+            video: "CGA Compatible"
+        }
+    };
+
+    const hw = hardwareConfigs[config.hardware];
+
+    // OS-specific configurations
+    const osConfigs = {
+        windows95: {
+            bios: "IBM Personal Computer AT\nVersion A04  01/10/86\n\n",
+            osLoad: "Loading Windows 95...\n\n"
+        },
+        windows98: {
+            bios: "Award Modular BIOS v4.51PG\n04/07/98\n\n",
+            osLoad: "Loading Windows 98...\n\n"
+        },
+        dos: {
+            bios: "Phoenix 80386 ROM BIOS PLUS Version 1.10\n\n",
+            osLoad: "Loading MS-DOS 6.22...\n\n"
+        }
+    };
+
+    const os = osConfigs[config.os];
+
+    // Create the sequence with applied timing multipliers
+    return [
+        {
+            text: os.bios,
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.BIOS_HEADER * multiplier),
+            sound: BOOT_SEQUENCE_CONFIG.SOUNDS.BIOS_BEEP,
+            description: "BIOS header display"
+        },
+        {
+            text: "Performing Power-On Self Test (POST)...\n",
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.POST_START * multiplier),
+            sound: '',
+            description: "POST initialization"
+        },
+        {
+            text: `CPU: ${hw.cpu} - OK\n`,
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.COMPONENT_CHECK * multiplier),
+            sound: '',
+            description: "CPU detection and test"
+        },
+        {
+            text: `Memory Test: ${hw.ram} - OK\n`,
+            timing: Math.round((BOOT_SEQUENCE_CONFIG.TIMINGS.COMPONENT_CHECK + 100) * multiplier),
+            sound: '',
+            description: "RAM testing"
+        },
+        {
+            text: `Hard Drive: ${hw.hdd} - OK\n`,
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.COMPONENT_CHECK * multiplier),
+            sound: BOOT_SEQUENCE_CONFIG.SOUNDS.HDD_ACCESS,
+            description: "Primary storage detection"
+        },
+        {
+            text: "Floppy Drive: 1.44MB - OK\n",
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.COMPONENT_CHECK * multiplier),
+            sound: '',
+            description: "Floppy drive detection"
+        },
+        {
+            text: `CD-ROM: ${hw.cdrom} - OK\n`,
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.COMPONENT_CHECK * multiplier),
+            sound: '',
+            description: "Optical drive detection"
+        },
+        {
+            text: `Video: ${hw.video} - OK\n`,
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.COMPONENT_CHECK * multiplier),
+            sound: '',
+            description: "Graphics adapter test"
+        },
+        {
+            text: "Keyboard: Detected\n",
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.FAST * multiplier),
+            sound: '',
+            description: "Input device detection"
+        },
+        {
+            text: "Mouse: Detected\n",
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.FAST * multiplier),
+            sound: '',
+            description: "Pointing device detection"
+        },
+        {
+            text: "Serial Ports: COM1, COM2 - OK\n",
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.COMPONENT_CHECK * multiplier),
+            sound: '',
+            description: "Serial port enumeration"
+        },
+        {
+            text: "Parallel Ports: LPT1 - OK\n\n",
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.COMPONENT_CHECK * multiplier),
+            sound: BOOT_SEQUENCE_CONFIG.SOUNDS.POST_COMPLETE,
+            description: "Parallel port detection"
+        },
+        {
+            text: os.osLoad,
+            timing: Math.round(BOOT_SEQUENCE_CONFIG.TIMINGS.FINAL_LOAD * multiplier),
+            sound: BOOT_SEQUENCE_CONFIG.SOUNDS.BOOT_SUCCESS,
+            description: "OS kernel loading"
+        }
+    ];
+}
+
+// Default boot sequence - can be customized
+let bootSequence = createBootSequence();
+
+// Function to change boot sequence configuration (can be called from console or other code)
+window.setBootSequence = function(options) {
+    bootSequence = createBootSequence(options);
+    console.log('Boot sequence updated:', options);
+};
+
+// Example usage functions for different boot styles
+window.setFastBoot = function() {
+    window.setBootSequence({ speed: 'fast' });
+};
+
+window.setDetailedBoot = function() {
+    window.setBootSequence({ speed: 'detailed' });
+};
+
+window.setGamingPC = function() {
+    window.setBootSequence({ hardware: 'gaming', os: 'windows98' });
+};
+
+window.setRetroPC = function() {
+    window.setBootSequence({ hardware: 'minimal', os: 'dos' });
 };
 
 // AOL Connection
@@ -126,7 +306,7 @@ function playSound(file) {
 }
 window.playSound = playSound;
 
-// Boot sequence
+// Boot sequence - Updated to work with new array structure
 function initBootSequence() {
     const bootScreen = document.getElementById('boot-screen');
     const biosText = bootScreen.querySelector('.bios-text');
@@ -137,17 +317,22 @@ function initBootSequence() {
     bootScreen.style.display = 'flex';
     let stepIndex = 0;
     let text = '';
+
     const nextStep = () => {
-        if (stepIndex < bootSequence.steps.length) {
-            text += bootSequence.steps[stepIndex];
+        if (stepIndex < bootSequence.length) {
+            const currentStep = bootSequence[stepIndex];
+            text += currentStep.text;
             biosText.textContent = text;
             const textbox = bootScreen.querySelector('.boot-textbox');
             textbox.scrollTop = textbox.scrollHeight;
-            if (bootSequence.sounds[stepIndex]) {
-                playSound(bootSequence.sounds[stepIndex]);
+
+            // Play sound if specified
+            if (currentStep.sound) {
+                playSound(currentStep.sound);
             }
+
             stepIndex++;
-            setTimeout(nextStep, bootSequence.timings[stepIndex - 1]);
+            setTimeout(nextStep, currentStep.timing);
         } else {
             setTimeout(() => {
                 bootScreen.style.display = 'none';
@@ -293,28 +478,37 @@ function easterEggBSOD() {
     document.addEventListener('keydown', removeBSOD);
 }
 
+// Desktop icons configuration
+const desktopIcons = [
+    {name: 'Home', col: 0, row: 0, action: () => openBrowser('home'), icon: 'desktop/1browser.jpg'},
+    {name: 'About Me', col: 0, row: 1, action: () => openBrowser('about'), icon: 'desktop/aboutme.jpg'},
+    {name: 'Retro Gaming', col: 0, row: 2, action: () => openBrowser('gaming'), icon: 'desktop/1games.jpg'},
+    {name: 'My Jeep XJ', col: 0, row: 3, action: () => openBrowser('jeep'), icon: 'desktop/1jeep.jpg'},
+    {name: '1996 Camry', col: 0, row: 4, action: () => openBrowser('camry'), icon: 'desktop/1camry.jpg'},
+    {name: 'Cool Links', col: 0, row: 5, action: () => openBrowser('links'), icon: 'desktop/1links.jpg'},
+    {name: 'Meme Generator', col: 0, row: 6, action: () => openBrowser('meme'), icon: 'desktop/1meme.jpg'},
+    {name: 'Chat Room', col: 1, row: 0, action: () => openBrowser('chat'), icon: 'desktop/1chat.jpg'},
+    {name: 'Music Player', col: 1, row: 1, action: () => openBrowser('music'), icon: 'desktop/1music.jpg'},
+    {name: 'My Computer', col: 1, row: 2, action: () => openWindow('My Computer', '<h2>My Computer</h2><p>System: Windows Toasty5</p><p>Processor: Intel Pentium III 500MHz</p><p>Memory: 128MB RAM</p><p>Hard Drive: 6GB</p><p>Connection: ' + (aolConnection.isConnected ? 'Online (56K)' : 'Offline') + '</p>'), icon: 'desktop/1mypc.jpg'},
+    {name: 'Recycle Bin', col: 1, row: 3, action: () => openWindow('Recycle Bin', '<h2>Recycle Bin</h2><p>Empty</p>'), icon: 'desktop/1recycle.jpg'},
+    {name: 'Notepad', col: 1, row: 4, action: () => openWindow('Notepad', '<textarea style="width: 100%; height: 300px; border: 1px inset #808080;" placeholder="Type your notes here..."></textarea>'), icon: 'desktop/notepad.jpg'},
+    {name: 'Calculator', col: 1, row: 5, action: () => openApp('Calculator'), icon: 'desktop/calc.jpg'},
+    {name: 'Paint', col: 1, row: 6, action: () => openApp('Paint'), icon: 'desktop/paint.jpg'},
+    {name: 'Solitaire', col: 2, row: 0, action: () => openApp('Solitaire'), icon: 'desktop/solitair.jpg'},
+    {name: 'Solmerica Online', col: 2, row: 1, action: () => openApp('solmerica'), icon: 'AOL/Logo_login.png'},
+    {name: 'Guestbook', col: 2, row: 2, action: () => openBrowser('guestbook'), icon: 'desktop/1guestbook.jpg'},
+    {name: 'Downloads', col: 2, row: 3, action: () => openBrowser('downloads'), icon: 'desktop/downloads.jpg'},
+    {name: 'News', col: 2, row: 4, action: () => openBrowser('news'), icon: 'desktop/news.jpg'}
+];
+
 // Initialize the desktop
 function initDesktop() {
-    // Add desktop icons for all pages and applications with complete icon integration
-    createDesktopIcon('Home', 20, 20, () => openBrowser('home'), 'desktop/1browser.jpg');
-    createDesktopIcon('About Me', 20, 100, () => openBrowser('about'), 'desktop/aboutme.jpg');
-    createDesktopIcon('Retro Gaming', 20, 180, () => openBrowser('gaming'), 'desktop/1games.jpg');
-    createDesktopIcon('My Jeep XJ', 20, 260, () => openBrowser('jeep'), 'desktop/1jeep.jpg');
-    createDesktopIcon('1996 Camry', 20, 340, () => openBrowser('camry'), 'desktop/1camry.jpg');
-    createDesktopIcon('Cool Links', 20, 420, () => openBrowser('links'), 'desktop/1links.jpg');
-    createDesktopIcon('Guestbook', 20, 500, () => openBrowser('guestbook'), 'desktop/1guestbook.jpg');
-    createDesktopIcon('Downloads', 20, 580, () => openBrowser('downloads'), 'desktop/downloads.jpg');
-    createDesktopIcon('News', 20, 660, () => openBrowser('news'), 'desktop/news.jpg');
-    createDesktopIcon('Meme Generator', 120, 20, () => openBrowser('meme'), 'desktop/1meme.jpg');
-    createDesktopIcon('Chat Room', 120, 100, () => openBrowser('chat'), 'desktop/1chat.jpg');
-    createDesktopIcon('Music Player', 120, 180, () => openBrowser('music'), 'desktop/1music.jpg');
-    createDesktopIcon('My Computer', 120, 260, () => openWindow('My Computer', '<h2>My Computer</h2><p>System: Windows Toasty5</p><p>Processor: Intel Pentium III 500MHz</p><p>Memory: 128MB RAM</p><p>Hard Drive: 6GB</p><p>Connection: ' + (aolConnection.isConnected ? 'Online (56K)' : 'Offline') + '</p>'), 'desktop/1mypc.jpg');
-    createDesktopIcon('Recycle Bin', 120, 340, () => openWindow('Recycle Bin', '<h2>Recycle Bin</h2><p>Empty</p>'), 'desktop/1recycle.jpg');
-    createDesktopIcon('Notepad', 120, 420, () => openWindow('Notepad', '<textarea style="width: 100%; height: 300px; border: 1px inset #808080;" placeholder="Type your notes here..."></textarea>'), 'desktop/notepad.jpg');
-    createDesktopIcon('Calculator', 120, 500, () => openApp('Calculator'), 'desktop/calc.jpg');
-    createDesktopIcon('Paint', 120, 580, () => openApp('Paint'), 'desktop/paint.jpg');
-    createDesktopIcon('Solitaire', 120, 660, () => openApp('Solitaire'), 'desktop/solitair.jpg');
-    createDesktopIcon('Solmerica Online', 220, 20, () => openApp('solmerica'), 'AOL/Logo_login.png');
+    // Add desktop icons for all pages and applications with complete icon integration (128px grid center-aligned)
+    desktopIcons.forEach(icon => {
+        const x = 30 + icon.col * 128;
+        const y = 30 + icon.row * 128;
+        createDesktopIcon(icon.name, x, y, icon.action, icon.icon);
+    });
 
     // Add desktop right-click context menu
     document.getElementById('desktop').addEventListener('contextmenu', showContextMenu);
@@ -352,19 +546,27 @@ function showContextMenu(e) {
         if (isDraggingIcon && draggedIcon) {
             const dx = e.clientX - dragStartX;
             const dy = e.clientY - dragStartY;
-            let newLeft = dragStartLeft + dx;
-            let newTop = dragStartTop + dy;
-            // Clamp to desktop bounds during drag
-            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - 96));
-            newTop = Math.max(0, Math.min(newTop, window.innerHeight - 136));
-            draggedIcon.style.left = newLeft + 'px';
-            draggedIcon.style.top = newTop + 'px';
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                hasDragged = true;
+                let newLeft = dragStartLeft + dx;
+                let newTop = dragStartTop + dy;
+                // Clamp to desktop bounds during drag (match snap/icon 103x95 taskbar40)
+                const desktop = document.getElementById('desktop');
+                const desktopRect = desktop.getBoundingClientRect();
+                newLeft = Math.max(0, Math.min(newLeft, desktopRect.width - 103));
+                newTop = Math.max(0, Math.min(newTop, desktopRect.height - 95));
+                draggedIcon.style.left = newLeft + 'px';
+                draggedIcon.style.top = newTop + 'px';
+            }
         }
     });
 
     document.addEventListener('mouseup', () => {
         if (isDraggingIcon && draggedIcon) {
-            snapToGrid(draggedIcon);
+            if (hasDragged) {
+                snapToGridCursor(draggedIcon);
+                justDragged = true;
+            }
             draggedIcon = null;
             isDraggingIcon = false;
         }
@@ -404,7 +606,7 @@ function createDesktopIcon(name, x, y, action, iconPath = null) {
         <div class="icon-image" style="${iconStyle}">${iconPath ? '' : name.charAt(0)}</div>
         <div class="icon-label">${name}</div>
     `;
-    icon.addEventListener('click', action);
+    icon.addEventListener('click', (e) => { if (justDragged) { justDragged = false; return; } action(); });
 
     // Make draggable with global system
     icon.addEventListener('mousedown', (e) => {
@@ -415,28 +617,11 @@ function createDesktopIcon(name, x, y, action, iconPath = null) {
             dragStartY = e.clientY;
             dragStartLeft = parseInt(icon.style.left || '0');
             dragStartTop = parseInt(icon.style.top || '0');
+            clickOffsetX = e.clientX - dragStartLeft;
+            clickOffsetY = e.clientY - dragStartTop;
+            hasDragged = false;
             icon.style.zIndex = ++zIndexCounter;
             e.preventDefault();
-
-            // Prevent click if dragged
-            let hasDragged = false;
-            const onMouseMove = (moveEvent) => {
-                const dx = Math.abs(moveEvent.clientX - dragStartX);
-                const dy = Math.abs(moveEvent.clientY - dragStartY);
-                if (dx > 5 || dy > 5) hasDragged = true;
-            };
-            const onMouseUp = () => {
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-                if (hasDragged) {
-                    // Suppress the click that would fire after drag
-                    e.stopImmediatePropagation();
-                }
-                isDraggingIcon = false;
-                draggedIcon = null;
-            };
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
         }
     });
 

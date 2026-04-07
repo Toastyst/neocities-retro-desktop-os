@@ -347,8 +347,8 @@ iframe {
 
 .desktop-icon {
     position: absolute;
-    width: 103px;
-    height: 127px;
+    width: 104px;
+    height: 95px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -377,14 +377,23 @@ iframe {
 }
 
 .icon-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     font-size: 14px;
     text-align: center;
-    width: 110px;
     color: #fff;
     /* Clean look */
     text-shadow: none;
     background: transparent;
     pointer-events: none;
+}
+
+/* Custom font for boot screen */
+@font-face {
+    font-family: 'PerfectDOSVGA437';
+    src: url('assets/font/Perfect DOS VGA 437 Win.ttf') format('truetype');
 }
 
 /* Boot sequence */
@@ -396,8 +405,8 @@ iframe {
     height: 100vh;
     background: #000000;
     color: #FFFFFF;
-    font-family: 'Consolas', 'Courier New', monospace;
-    font-size: 12px;
+    font-family: 'PerfectDOSVGA437', 'Consolas', 'Courier New', monospace;
+    font-size: 24px;
     display: flex;
     align-items: center;
     justify-content: center;

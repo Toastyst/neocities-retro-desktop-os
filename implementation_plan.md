@@ -1,57 +1,46 @@
 # Implementation Plan
 
 [Overview]
-Establish a robust, persistent desktop icons system to prevent recurring issues with dragging, stacking, click triggering, and positioning. The system will use localStorage for persistence, collision detection in snapToGrid, drag threshold to prevent click on drop, and absolute positioning with 128px grid to avoid overlap.
+Refactor the snapToGridCursor function to use "Grab Offset" tracking and top-left anchoring with gutter clamping to eliminate grab bias, shivering, and edge positioning issues in desktop icon snapping.
 
-The current system uses absolute positioning with 64px grid (too small for 103px icons, causes overlap), drag threshold but click still fires sometimes, no persistence (positions reset on reload). This plan creates a data-driven system with Icon objects, load/save to localStorage, collision-aware snapping, reliable drag/click separation.
+The current snap logic uses raw mouse coordinates and center-point math, causing icons to jump relative to the cursor grab point and misalign near grid lines. This refactor introduces clickOffset tracking on mousedown to reconstruct the icon's true top-left position at drop time. It switches to top-left anchoring with Math.round for nearest-grid snapping, and enforces a hard gutter clamp to preserve the 30px padding visual. This ensures consistent, predictable snapping regardless of grab point, with perfect alignment to the visual grid.
+
+The changes are isolated to js/app.js drag/mousedown/mouseup handlers and snapToGridCursor function. No new files, no external dependencies, no breaking changes to other systems. The refactor maintains cursor-center feel while eliminating all reported issues.
 
 [Types]
-Define Icon interface with name, x, y, action, iconPath.
-
-Icon = {
-  name: string,
-  x: number,
-  y: number,
-  action: function,
-  iconPath: string
-}
-
-icons: Icon[]
+No type system changes required. All variables remain number (px values), functions use existing signatures.
 
 [Files]
-Modify 2 files:
-- js/app.js: Add icons array, loadIcons/saveIcons functions, modify createDesktopIcon to use data, update snapToGrid with collision, initDesktop loads from storage.
-- css/style.css: Confirm .desktop position:relative, .desktop-icon position:absolute width:103px height:127px.
+Modify js/app.js only (drag system and snap functions).
 
-No new files.
+No new files, no deletions.
 
 [Functions]
-Modify 4 functions:
-- js/app.js createDesktopIcon(name, x, y, action, iconPath): Use provided x/y, add to icons array, saveIcons().
-- js/app.js snapToGrid(element): Check for collision with other icons, find free grid slot if overlap, snap to 128px grid.
-- js/app.js initDesktop(): Load icons from localStorage, createDesktopIcon for each.
-- New js/app.js loadIcons(): Get from localStorage or default icons array.
-- New js/app.js saveIcons(): JSON.stringify icons to localStorage.
+Modify:
+- `snapToGridCursor(mouseX, mouseY, element)` → renamed `snapIconToGrid(element)` (derive mouse from element offset, top-left anchoring)
+- mousedown handler in createDesktopIcon: add `clickOffsetX = e.clientX - parseInt(icon.style.left); clickOffsetY = e.clientY - parseInt(icon.style.top);`
+- mouseup document listener: `snapIconToGrid(draggedIcon);` (pass element, derive position)
+
+Remove halfW/halfH constants (obsolete).
 
 [Classes]
 No class changes.
 
 [Dependencies]
-No new dependencies.
+No dependency changes.
 
 [Testing]
-Manual verification:
-1. Reload page - icons positions persist.
-2. Drag icon - moves, snaps to 128px grid, no overlap with others.
-3. Drag to overlap position - snaps to next free slot.
-4. Drag short distance - click triggers action.
-5. Drag long distance - no click, snaps without stack.
-6. Resize window - icons clamp to bounds.
+Manual testing:
+1. Drag icon from different grab points (edge, center) - snap to same grid position
+2. Drag near grid lines - no shivering
+3. Drag to edge - clamps at 30px gutter
+4. Verify init pos stable under snap
+
+No automated tests required.
 
 [Implementation Order]
-1. js/app.js: Add icons array with default positions/actions.
-2. js/app.js: Add loadIcons/saveIcons functions.
-3. js/app.js: Modify initDesktop to load and create icons.
-4. js/app.js: Modify createDesktopIcon to save after create.
-5. js/app.js: Update snapToGrid with 128px grid and collision detection.
-6. Test all, including reload persistence, drag/click separation, no stacking.
+1. Update mousedown to store clickOffsetX/Y
+2. Refactor snapToGridCursor to snapIconToGrid(element), use top-left formula with Math.round((targetLeft - 30) / 128) * 128 + 30, clamp Math.max(30, ...)
+3. Update mouseup to call snapIconToGrid(draggedIcon)
+4. Remove halfW/halfH
+5. Test drag from different grab points, edge clamps, grid alignment
