@@ -236,7 +236,7 @@ window.aolConnection = aolConnection;
 
 // Start menu actions
 window.startMenuActions = {
-    'Notepad': () => openWindow('Notepad', '<textarea style="width: 100%; height: 300px; border: 1px inset #808080;" placeholder="Type your notes here..."></textarea>'),
+    'Notepad': () => openApp('Notepad'),
     'Calculator': () => openApp('Calculator'),
     'Solitaire': () => openApp('Solitaire'),
     'Solmerica Online': () => openApp('solmerica'),
@@ -281,7 +281,13 @@ async function openApp(appName) {
     const className = appName.toLowerCase() + '-window';
     const windowEl = openWindow(appName, '', null, null, width, height, className);
     const contentDiv = windowEl.querySelector('.window-content');
-    const createApp = await registry[appName.toLowerCase()]();
+    let createApp;
+    if (registry[appName.toLowerCase()]) {
+        createApp = await registry[appName.toLowerCase()]();
+    } else {
+        const module = await import(`./apps/${appName.toLowerCase()}/index.js`);
+        createApp = module.createApp;
+    }
     const appInstance = createApp(contentDiv);
     windowEl._app = appInstance;
     // Add resize observer
@@ -480,25 +486,25 @@ function easterEggBSOD() {
 
 // Desktop icons configuration
 const desktopIcons = [
-    {name: 'Home', col: 0, row: 0, action: () => openBrowser('home'), icon: 'desktop/1browser.jpg'},
-    {name: 'About Me', col: 0, row: 1, action: () => openBrowser('about'), icon: 'desktop/aboutme.jpg'},
-    {name: 'Retro Gaming', col: 0, row: 2, action: () => openBrowser('gaming'), icon: 'desktop/1games.jpg'},
-    {name: 'My Jeep XJ', col: 0, row: 3, action: () => openBrowser('jeep'), icon: 'desktop/1jeep.jpg'},
-    {name: '1996 Camry', col: 0, row: 4, action: () => openBrowser('camry'), icon: 'desktop/1camry.jpg'},
-    {name: 'Cool Links', col: 0, row: 5, action: () => openBrowser('links'), icon: 'desktop/1links.jpg'},
-    {name: 'Meme Generator', col: 0, row: 6, action: () => openBrowser('meme'), icon: 'desktop/1meme.jpg'},
-    {name: 'Chat Room', col: 1, row: 0, action: () => openBrowser('chat'), icon: 'desktop/1chat.jpg'},
-    {name: 'Music Player', col: 1, row: 1, action: () => openBrowser('music'), icon: 'desktop/1music.jpg'},
-    {name: 'My Computer', col: 1, row: 2, action: () => openWindow('My Computer', '<h2>My Computer</h2><p>System: Windows Toasty5</p><p>Processor: Intel Pentium III 500MHz</p><p>Memory: 128MB RAM</p><p>Hard Drive: 6GB</p><p>Connection: ' + (aolConnection.isConnected ? 'Online (56K)' : 'Offline') + '</p>'), icon: 'desktop/1mypc.jpg'},
-    {name: 'Recycle Bin', col: 1, row: 3, action: () => openWindow('Recycle Bin', '<h2>Recycle Bin</h2><p>Empty</p>'), icon: 'desktop/1recycle.jpg'},
-    {name: 'Notepad', col: 1, row: 4, action: () => openWindow('Notepad', '<textarea style="width: 100%; height: 300px; border: 1px inset #808080;" placeholder="Type your notes here..."></textarea>'), icon: 'desktop/notepad.jpg'},
-    {name: 'Calculator', col: 1, row: 5, action: () => openApp('Calculator'), icon: 'desktop/calc.jpg'},
-    {name: 'Paint', col: 1, row: 6, action: () => openApp('Paint'), icon: 'desktop/paint.jpg'},
-    {name: 'Solitaire', col: 2, row: 0, action: () => openApp('Solitaire'), icon: 'desktop/solitair.jpg'},
-    {name: 'Solmerica Online', col: 2, row: 1, action: () => openApp('solmerica'), icon: 'AOL/Logo_login.png'},
-    {name: 'Guestbook', col: 2, row: 2, action: () => openBrowser('guestbook'), icon: 'desktop/1guestbook.jpg'},
-    {name: 'Downloads', col: 2, row: 3, action: () => openBrowser('downloads'), icon: 'desktop/downloads.jpg'},
-    {name: 'News', col: 2, row: 4, action: () => openBrowser('news'), icon: 'desktop/news.jpg'}
+    {name: 'Home', col: 0, row: 0, action: () => openBrowser('home'), icon: 'icons/desktop/1browser.jpg'},
+    {name: 'About Me', col: 0, row: 1, action: () => openBrowser('about'), icon: 'icons/desktop/aboutme.jpg'},
+    {name: 'Retro Gaming', col: 0, row: 2, action: () => openBrowser('gaming'), icon: 'icons/desktop/1games.jpg'},
+    {name: 'My Jeep XJ', col: 0, row: 3, action: () => openBrowser('jeep'), icon: 'icons/desktop/1jeep.jpg'},
+    {name: '1996 Camry', col: 0, row: 4, action: () => openBrowser('camry'), icon: 'icons/desktop/1camry.jpg'},
+    {name: 'Cool Links', col: 0, row: 5, action: () => openBrowser('links'), icon: 'icons/desktop/1links.jpg'},
+    {name: 'Meme Generator', col: 0, row: 6, action: () => openBrowser('meme'), icon: 'icons/desktop/1meme.jpg'},
+    {name: 'Chat Room', col: 1, row: 0, action: () => openBrowser('chat'), icon: 'icons/desktop/1chat.jpg'},
+    {name: 'Music Player', col: 1, row: 1, action: () => openBrowser('music'), icon: 'icons/desktop/1music.jpg'},
+    {name: 'My Computer', col: 1, row: 2, action: () => openWindow('My Computer', '<h2>My Computer</h2><p>System: Windows Toasty5</p><p>Processor: Intel Pentium III 500MHz</p><p>Memory: 128MB RAM</p><p>Hard Drive: 6GB</p><p>Connection: ' + (aolConnection.isConnected ? 'Online (56K)' : 'Offline') + '</p>'), icon: 'icons/desktop/1mypc.jpg'},
+    {name: 'Recycle Bin', col: 1, row: 3, action: () => openWindow('Recycle Bin', '<h2>Recycle Bin</h2><p>Empty</p>'), icon: 'icons/desktop/1recycle.jpg'},
+    {name: 'Notepad', col: 1, row: 4, action: () => openApp('Notepad'), icon: 'icons/desktop/notepad.jpg'},
+    {name: 'Calculator', col: 1, row: 5, action: () => openApp('Calculator'), icon: 'icons/desktop/calc.jpg'},
+    {name: 'Paint', col: 1, row: 6, action: () => openApp('Paint'), icon: 'icons/desktop/paint.jpg'},
+    {name: 'Solitaire', col: 2, row: 0, action: () => openApp('Solitaire'), icon: 'icons/desktop/solitair.jpg'},
+    {name: 'Solmerica Online', col: 2, row: 1, action: () => openApp('solmerica'), icon: 'icons/AOL/Logo_login.png'},
+    {name: 'Guestbook', col: 2, row: 2, action: () => openBrowser('guestbook'), icon: 'icons/desktop/1guestbook.jpg'},
+    {name: 'Downloads', col: 2, row: 3, action: () => openBrowser('downloads'), icon: 'icons/desktop/downloads.jpg'},
+    {name: 'News', col: 2, row: 4, action: () => openBrowser('news'), icon: 'icons/desktop/news.jpg'}
 ];
 
 // Initialize the desktop
@@ -601,7 +607,7 @@ function createDesktopIcon(name, x, y, action, iconPath = null) {
     icon.style.position = 'absolute';
     icon.style.left = x + 'px';
     icon.style.top = y + 'px';
-    const iconStyle = iconPath ? `background-image: url(icons/${iconPath}); background-size: cover; background-position: center;` : '';
+    const iconStyle = iconPath ? `background-image: url(${iconPath}); background-size: cover; background-position: center;` : '';
     icon.innerHTML = `
         <div class="icon-image" style="${iconStyle}">${iconPath ? '' : name.charAt(0)}</div>
         <div class="icon-label">${name}</div>
@@ -843,10 +849,16 @@ function openBrowser(url) {
             }
         });
 
+        // Add to windows array for taskbar
+        windows.push(browserWindow);
+
         // Add window controls
         browserWindow.querySelector('.minimize').addEventListener('click', () => minimizeWindow(browserWindow));
         browserWindow.querySelector('.maximize').addEventListener('click', () => maximizeWindow(browserWindow));
-        browserWindow.querySelector('.close').addEventListener('click', () => closeWindow(browserWindow));
+        browserWindow.querySelector('.close').addEventListener('click', () => {
+            windows = windows.filter(w => w !== browserWindow);
+            closeWindow(browserWindow);
+        });
     }
     browserWindow.style.display = 'flex';
     focusWindow(browserWindow);
@@ -872,15 +884,22 @@ async function loadPage(pageName) {
     }
 
     try {
-        const resp = await fetch(`pages/${pageName}/index.html`);
+        // Try flat .html first
+        let resp = await fetch(`pages/${pageName}.html`);
+        if (!resp.ok) {
+            // Fallback to subdir/index.html
+            resp = await fetch(`pages/${pageName}/index.html`);
+        }
         if (resp.ok) {
-            content.innerHTML = await resp.text();
+            const html = await resp.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            content.innerHTML = doc.body.innerHTML;
             return;
         }
     } catch (e) {
         // Fetch failed or 404, fallback to inline
     }
-
     // Comprehensive Geocities-style pages
     const pages = {
         'home': `

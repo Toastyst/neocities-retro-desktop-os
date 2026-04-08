@@ -7,7 +7,7 @@ A fully functional 1995 Windows 3.0 / early AOL-era desktop emulation built with
 - **Boot Sequence**: Authentic BIOS-style startup with scrolling text and sounds
 - **Desktop Environment**: Draggable/resizable windows, taskbar with clock, desktop icons with robust snap system
 - **Browser**: Built-in Geocities-style web browser with 10+ pages
-- **Applications**: Calculator, Paint, Solitaire (canvas-based), Solmerica Online, Notepad, Meme Generator
+- **Applications**: Calculator, Paint, Solitaire (canvas-based), Solmerica Online, Notepad (modular with toolbar, textarea, word count), Meme Generator
 - **Audio System**: HTML5 audio with ambient HDD loop, sound effects
 - **Solmerica Online**: Simulated connection with progress bar and modem sounds
 - **Start Menu**: Hierarchical menu system with programs and settings

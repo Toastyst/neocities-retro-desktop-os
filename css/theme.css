@@ -1,0 +1,115 @@
+:root {
+  /* Colors */
+  --color-window-bg: #C0C0C0;
+  --color-window-gradient: linear-gradient(135deg, #C0C0C0 0%, #D0D0D0 50%, #B0B0B0 100%);
+  --color-titlebar-bg: linear-gradient(90deg, #000080 0%, #0000FF 50%, #000080 100%);
+  --color-content-bg: #FFFFFF;
+  --color-toolbar-bg: #C0C0C0;
+  --color-status-bg: #F0F0F0;
+  --color-text: #000000;
+  --color-border-outset: #FFFFFF;
+  --color-border-inset: #808080;
+  --color-button-hover: linear-gradient(135deg, #E0E0E0 0%, #F0F0F0 100%);
+
+  /* Typography */
+  --font-main: 'MS Sans Serif', sans-serif;
+  --font-mono: 'Courier New', monospace;
+  --font-size-title: 0.75rem;
+  --font-size-body: 0.875rem;
+  --font-size-small: 0.75rem;
+
+  /* Spacing & Sizing */
+  --spacing-xs: 0.125rem;
+  --spacing-sm: 0.25rem;
+  --spacing-md: 0.5rem;
+  --spacing-lg: 1rem;
+  --border-thin: 1px solid;
+  --border-thick: 2px solid;
+  --button-size: 2.5rem; /* ~40px for toolbar buttons */
+  --control-size: 1rem; /* ~16px */
+}
+
+.notepad-window {
+  font-family: var(--font-main);
+}
+
+.notepad-window .window-titlebar {
+  font-size: var(--font-size-title);
+  font-weight: bold;
+}
+
+.notepad-window .window-control {
+  width: var(--control-size);
+  height: 0.875rem;
+  font-size: 0.625rem;
+}
+
+.notepad-window .window-content {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.notepad-window #toolbar {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-toolbar-bg);
+  border-bottom: var(--border-thick) inset var(--color-border-inset);
+  flex-shrink: 0;
+}
+
+.notepad-window #file-button,
+.notepad-window #edit-button {
+  background: var(--color-window-gradient);
+  border: var(--border-thick) outset var(--color-border-outset);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-body);
+  font-weight: bold;
+  cursor: pointer;
+  min-height: var(--button-size);
+  box-sizing: border-box;
+}
+
+.notepad-window #file-button:hover,
+.notepad-window #edit-button:hover {
+  background: var(--color-button-hover);
+}
+
+.notepad-window #file-button:active,
+.notepad-window #edit-button:active {
+  border: var(--border-thick) inset var(--color-border-inset);
+}
+
+.notepad-window #main-content {
+  flex: 1;
+  display: flex;
+  padding: var(--spacing-sm);
+  box-sizing: border-box;
+}
+
+.notepad-window #editor {
+  flex: 1;
+  width: 100%;
+  border: var(--border-thick) inset var(--color-border-inset);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  resize: none;
+  background: var(--color-content-bg);
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+
+.notepad-window #footer {
+  padding: var(--spacing-sm);
+  border-top: var(--border-thick) inset var(--color-border-inset);
+  background: var(--color-status-bg);
+  text-align: right;
+  font-size: var(--font-size-small);
+  color: var(--color-text);
+  flex-shrink: 0;
+}

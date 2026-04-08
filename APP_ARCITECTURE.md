@@ -43,6 +43,12 @@ export function createApp(container) {
 - Center perfectly inside any window size
 - No stretching
 
+# Notepad → text-editor
+- Toolbar with File/Edit buttons (non-functional placeholders)
+- Resizable textarea with monospace font
+- Word count in status bar
+- Flex layout: toolbar top, textarea center, status bottom
+
 # Paint → stretch-canvas
 
 - Canvas fills the entire window content area
