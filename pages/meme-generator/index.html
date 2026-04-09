@@ -1,0 +1,350 @@
+<!-- HTML Structure -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>They Don't Know Meme Generator</title>
+    <!-- CSS Styles -->
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #112233;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        h1 {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Title -->
+    <h1>They Don't Know Meme Generator</h1>
+    <!-- Canvas for Meme Rendering -->
+    <canvas id="memeCanvas"></canvas>
+    <!-- Generate Button -->
+    <button id="generateBtn">Generate New Meme</button>
+
+    <!-- JavaScript Code -->
+    <script>
+        // ANCHOR: Stage 1 - Canvas Setup
+        // Stage 1: Static layout & basic canvas rendering
+        const canvas = document.getElementById('memeCanvas');
+        const ctx = canvas.getContext('2d');
+        const generateBtn = document.getElementById('generateBtn');
+
+        // Load template image
+        const templateImg = new Image();
+        templateImg.src = 'They-dont-know.png';
+        templateImg.onload = () => {
+            console.log('Template onload fired, naturalWidth:', templateImg.naturalWidth, 'naturalHeight:', templateImg.naturalHeight);
+            canvas.width = templateImg.naturalWidth;
+            canvas.height = templateImg.naturalHeight;
+            console.log('Canvas set to:', canvas.width, 'x', canvas.height);
+            ctx.drawImage(templateImg, 0, 0);
+            console.log('Template drawn on canvas');
+            // Generate first meme on load
+            console.log('Calling refreshMeme');
+            refreshMeme();
+        };
+        templateImg.onerror = () => {
+            console.error('Template load failed');
+            // Fallback: set canvas size and draw error
+            canvas.width = 640;
+            canvas.height = 480;
+            ctx.fillStyle = 'red';
+            ctx.fillRect(0, 0, 640, 480);
+            ctx.fillStyle = 'white';
+            ctx.font = '20px Arial';
+            ctx.fillText('Template failed to load', 10, 30);
+            console.log('Fallback canvas drawn, calling refreshMeme');
+            refreshMeme();
+        };
+
+        // ANCHOR: Configuration
+        // Text coordinates (centered, 400px wide)
+        const textStart = { x: 210, y: 43 };
+        const maxWidth = 460;
+
+        // Speaker and chars positions
+        const speakerAnchor = { x: 50, y: 0, maxWidth: 200 }; // y set dynamically
+        const charsAnchor = { x: 0, y: 0, maxWidth: 200 }; // x and y set dynamically
+
+        // Stage 4: Image overlays (phased)
+        const anchors = {
+            thoughtBubble: { x: 423, y: 63 },
+            mainHead: { x: 156, y: 100 },
+            mainHand: { x: 154, y: 202 },
+            partyHead1: { x: 80, y: 468 },
+            partyHead2: { x: 214, y: 468 },
+            partyHead3: { x: 480, y: 227 },
+            partyHead4: { x: 604, y: 273 }
+        };
+
+        // ANCHOR: Utility Functions
+        async function fetchImage(keyword) {
+            const img = new Image();
+            const url = `https://picsum.photos/seed/${encodeURIComponent(keyword)}/400/400`;
+            console.log('Attempting URL:', url);
+            return new Promise((resolve, reject) => {
+                img.onload = () => resolve(img);
+                img.onerror = () => {
+                    console.log('Failed URL:', url);
+                    console.warn('Image load failed, retrying Picsum...');
+                    const retryImg = new Image();
+                    retryImg.src = `https://picsum.photos/seed/${encodeURIComponent(keyword)}/400/400`;
+                    retryImg.onload = () => resolve(retryImg);
+                    retryImg.onerror = reject;
+                };
+                img.src = url;
+            });
+        }
+
+        function drawImageAtAnchor(ctx, img, anchor, size = 70) {
+            ctx.drawImage(img, anchor.x - size / 2, anchor.y - size / 2, size, size);
+        }
+
+        function drawText(ctx, text, x, y, maxWidth) {
+            ctx.font = 'bold 35px Impact, Arial';
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            const words = text.split(' ');
+            let line = '';
+            let lines = [];
+            for (let word of words) {
+                const testLine = line + word + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && line !== '') {
+                    lines.push(line.trim());
+                    line = word + ' ';
+                } else {
+                    line = testLine;
+                }
+            }
+            lines.push(line.trim());
+            // Draw textbox outline
+            const boxHeight = lines.length * 30 + 20;
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(x - 10, y - 10, maxWidth + 20, boxHeight);
+            // Draw text
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < lines.length; i++) {
+                ctx.fillText(lines[i], x, y + i * 30);
+                ctx.strokeText(lines[i], x, y + i * 30);
+            }
+        }
+
+        // ANCHOR: Markov Utils
+        function weightedRandom(choices) {
+            const words = Object.keys(choices);
+            const weights = Object.values(choices);
+            const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+            let random = Math.random() * totalWeight;
+            for (let i = 0; i < words.length; i++) {
+                random -= weights[i];
+                if (random <= 0) {
+                    return words[i];
+                }
+            }
+            return words[words.length - 1]; // fallback
+        }
+
+        function getRandomState(chain) {
+            // Find the BEGIN state
+            for (let entry of chain) {
+                if (entry[0].includes('___BEGIN__')) {
+                    return entry[0];
+                }
+            }
+            throw new Error('No BEGIN state found in chain');
+        }
+
+        // ANCHOR: MarkovText Class
+        class MarkovText {
+            constructor(model) {
+                this.state_size = model.state_size;
+                this.chain = JSON.parse(model.chain);
+                this.parsed_sentences = model.parsed_sentences;
+            }
+
+            makeSentence(max_overlap_ratio = 0.8, max_tries = 10) {
+                // Skip overlap check for speed
+                const sentence = this.walkChain();
+                return sentence.join(' ');
+            }
+
+            walkChain() {
+                const words = [];
+                let state = getRandomState(this.chain);
+                while (true) {
+                    const nextWord = this.getNextWord(state);
+                    if (nextWord === '___END__' || nextWord === '.') break;
+                    words.push(nextWord);
+                    state = state.slice(1).concat(nextWord);
+                }
+                return words;
+            }
+
+            getNextWord(state) {
+                for (let entry of this.chain) {
+                    if (JSON.stringify(entry[0]) === JSON.stringify(state)) {
+                        return weightedRandom(entry[1]);
+                    }
+                }
+                return '___END__'; // fallback
+            }
+
+
+        }
+
+        // ANCHOR: Model Loading
+        let cachedModel = null;
+
+        async function loadModel() {
+            if (cachedModel) return cachedModel;
+            console.log('Loading model from model.json');
+            try {
+                const response = await fetch('model.json');
+                const model = await response.json();
+                cachedModel = new MarkovText(model);
+                console.log('Model loaded successfully');
+                return cachedModel;
+            } catch (error) {
+                console.error('Failed to load model:', error);
+                throw error;
+            }
+        }
+
+        async function fetchJoke() {
+            const model = await loadModel();
+            let joke = model.makeSentence().trim();
+            return joke;
+        }
+
+        // ANCHOR: Event Listeners
+        // Button event listener
+        generateBtn.addEventListener('click', refreshMeme);
+
+        // ANCHOR: Main Function
+        // Updated refreshMeme function (async)
+        async function refreshMeme() {
+            console.log('Button clicked - refreshing meme');
+            console.log('refreshMeme start');
+            // Loading state
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Loading...';
+            try {
+                // Fetch joke
+                const joke = await fetchJoke();
+                // Debug datapoints
+                console.log('Joke:', joke);
+                window.lastJoke = joke;
+                // Update display (removed visible debug)
+                // Clear canvas and redraw template
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(templateImg, 0, 0);
+                console.log('Template redrawn on canvas');
+                // Parse joke into lines
+                const lines = joke.split('\n').map(l => l.trim()).filter(Boolean);
+                let jokeLine = lines[0] || '';
+                let speakerLine = lines[1] || '';
+                let charactersLine = lines[2] || '';
+                jokeLine = jokeLine.replace(/\s+/g, ' ').trim();
+                speakerLine = speakerLine.replace(/\s+/g, ' ').trim();
+                charactersLine = charactersLine.replace(/\s+/g, ' ').trim();
+                console.log('joke/line1:', jokeLine);
+                console.log('speaker/line2:', speakerLine);
+                console.log('characters/line3:', charactersLine);
+                // Draw speaker image at mainHead (increased size 50%: 70->105)
+                if (speakerLine.startsWith('SPEAKER: [')) {
+                    const speakerStr = speakerLine.slice('SPEAKER: ['.length, -1).trim();
+                    const searchKeyword = speakerStr.replace(/ /g, '+');
+                    try {
+                        const img = await fetchImage(searchKeyword);
+                        drawImageAtAnchor(ctx, img, anchors.mainHead, 105);
+                        console.log('Speaker image drawn at mainHead for', searchKeyword);
+                    } catch (imgError) {
+                        console.warn('Failed to load image for speaker', searchKeyword, imgError);
+                    }
+                }
+                /*
+                // Draw characters at anchor
+                if (line3) {
+                    charsAnchor.x = canvas.width - charsAnchor.maxWidth - 50; // right side
+                    charsAnchor.y = textStart.y + 50;
+                    drawText(ctx, line3, charsAnchor.x, charsAnchor.y, charsAnchor.maxWidth);
+                    console.log('Characters drawn:', line3);
+                }
+                */
+                // Parse characters for images
+                let characters = [];
+                if (charactersLine.startsWith('CHARACTERS: [')) {
+                    const listStr = charactersLine.slice('CHARACTERS: ['.length, charactersLine.indexOf(']'));
+                    characters = listStr.split(',').map(c => c.trim()).filter(c => c);
+                    console.log('Parsed characters:', characters);
+                }
+                // Ensure 2-4 characters, pad with 'person' if needed
+                while (characters.length < 2) characters.push('person');
+                if (characters.length > 4) characters = characters.slice(0, 4);
+                const partyKeys = ['partyHead1', 'partyHead2', 'partyHead3', 'partyHead4'];
+                for (let i = 0; i < characters.length; i++) {
+                    const key = partyKeys[i];
+                    const charKeyword = characters[i];
+                    const searchKeyword = charKeyword.replace(/ /g, '+');
+                    try {
+                        const img = await fetchImage(searchKeyword);
+                        drawImageAtAnchor(ctx, img, anchors[key], 120); // increased 50%: 80->120
+                        console.log('Character image drawn at', key, 'for', searchKeyword);
+                    } catch (imgError) {
+                        console.warn('Failed to load image for', searchKeyword, imgError);
+                    }
+                }
+                // Draw joke text on top
+                drawText(ctx, jokeLine, textStart.x, textStart.y, maxWidth);
+                console.log('Joke text drawn on top:', jokeLine);
+            } catch (error) {
+                console.error('Error generating meme:', error);
+                // Fallback: draw a static message
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(templateImg, 0, 0);
+                drawText(ctx, 'Error loading joke. Try again.', textStart.x, textStart.y, maxWidth);
+            } finally {
+                // Reset button
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate New Meme';
+            }
+        }
+    </script>
+    <footer style="margin-top: 20px; font-size: 12px; color: white; text-align: center;">
+        Images by <a href="https://picsum.photos" target="_blank">Lorem Picsum</a>
+    </footer>
+</body>
+</html>

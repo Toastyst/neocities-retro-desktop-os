@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Sprite Forge</title>
+    <link rel="stylesheet" href="simple_styles.css">
+</head>
+<body class="bg-gray-800 min-h-screen">
+    <header class="text-center py-6">
+        <h1 class="text-4xl font-bold text-green-400">🛠️ Simple Sprite Forge</h1>
+        <p class="text-sm text-gray-400">Generate a single 32×32 pixel sprite</p>
+    </header>
+
+    <div class="container py-6">
+        <!-- API Key -->
+        <div class="mb-6">
+            <label for="apiKey" class="block text-sm font-medium mb-2">xAI Grok API Key</label>
+            <input type="password" id="apiKey" class="w-full bg-gray-700 px-3 py-2 rounded text-white" placeholder="Enter your API key">
+        </div>
+
+        <!-- Form -->
+        <form id="generateForm" class="bg-gray-700 p-6 rounded-lg mb-6">
+            <div class="mb-4">
+                <label for="description" class="block text-sm font-medium mb-2">Sprite Description</label>
+                <textarea id="description" rows="2" class="w-full bg-gray-600 px-3 py-2 rounded text-white" placeholder="e.g., A cute cat"></textarea>
+            </div>
+            <button type="submit" id="generateBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded disabled:opacity-50">
+                🚀 Generate Sprite
+            </button>
+        </form>
+
+        <!-- Progress -->
+        <div id="progress" class="hidden mb-6">
+            <div class="bg-gray-600 rounded-full h-4">
+                <div id="progressBar" class="bg-green-600 h-4 rounded-full" style="width: 0%"></div>
+            </div>
+            <p id="progressText" class="text-center mt-2 text-sm">Generating...</p>
+        </div>
+
+        <!-- Sprite Display -->
+        <div class="bg-gray-700 p-6 rounded-lg text-center">
+            <h3 class="text-lg font-semibold mb-4">Generated Sprite</h3>
+            <canvas id="spriteCanvas" width="32" height="32" class="bg-gray-600 rounded border"></canvas>
+            <div class="mt-4">
+                <button id="downloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:opacity-50" disabled>
+                    📥 Download PNG
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="simple_app.js" defer></script>
+</body>
+</html>

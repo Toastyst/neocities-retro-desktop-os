@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title - Toastyst's Retro Homepage</title>
+
+    <!-- Page-specific CSS files go here -->
+    <!-- <link rel="stylesheet" href="custom-styles.css"> -->
+
+    <!-- Page-specific JavaScript files go here -->
+    <!-- <script src="custom-script.js"></script> -->
+</head>
+<body>
+    <!--
+    PAGE TEMPLATE FOR NEOCITIES RETRO DESKTOP OS
+
+    This is the template for creating new pages in the retro desktop environment.
+
+    HOW TO USE THIS TEMPLATE:
+    1. Copy this entire file to your new page folder (e.g., pages/my-new-page/index.html)
+    2. Replace "Page Title" with your actual page title
+    3. Add your page content inside the <div class="geocities-page"> container
+    4. Use the provided CSS classes for consistent styling
+    5. Add any page-specific CSS/JS in the head section
+    6. Test the page by clicking its desktop icon
+
+    AVAILABLE CSS CLASSES:
+    - .geocities-page: Main page container
+    - .geocities-header: Page title/header
+    - .geocities-marquee: Animated scrolling text
+    - .geocities-table: Styled table
+    - .geocities-sidebar: Sidebar content
+    - .geocities-guestbook: Guestbook-style content box
+
+    DESKTOP INTEGRATION:
+    - Pages load via loadPage('folder-name') function
+    - Content is inserted into .window-content div
+    - Navigation uses onclick="loadPage('page-name')"
+    - Downloads use onclick="downloadFile('filename.zip')"
+
+    BEST PRACTICES:
+    - Keep content focused and retro-themed
+    - Use tables for layout (90s style!)
+    - Include navigation back to home
+    - Test in the desktop environment
+    - Use relative paths for assets
+    - Keep file sizes reasonable
+
+    EXAMPLE NAVIGATION:
+    <a href="#" onclick="loadPage('home')">← Back to Home</a>
+
+    EXAMPLE DOWNLOAD:
+    <a href="#" onclick="downloadFile('my-file.zip')">Download File</a>
+    -->
+
+    <div class="geocities-page">
+        <div class="geocities-header">📄 New Page Title 📄</div>
+        <div class="geocities-marquee">★★★ WELCOME TO MY NEW PAGE ★★★</div>
+
+        <table class="geocities-table">
+            <tr>
+                <td colspan="2">
+                    <center>
+                        <font size="+2"><b>🎉 Welcome to My New Page! 🎉</b></font>
+                        <br><br>
+                        <i>"This is where your amazing content goes!"</i>
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td width="70%">
+                    <h2>✨ Your Content Here</h2>
+                    <p>Replace this placeholder text with your actual page content. Use the available CSS classes for consistent styling.</p>
+
+                    <h2>📝 More Sections</h2>
+                    <p>Add as many sections as you need. Remember to keep the retro aesthetic!</p>
+                </td>
+                <td width="30%">
+                    <div class="geocities-sidebar">
+                        <center><b>Page Info</b></center>
+                        <hr>
+                        <b>Created:</b> Today<br>
+                        <b>Author:</b> You!<br>
+                        <b>Status:</b> Under Construction<br>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <center>
+            <font size="-1" color="#808080">
+                <a href="#" onclick="loadPage('home')">← Back to Home</a> |
+                <a href="#" onclick="loadPage('about')">About the Site</a>
+            </font>
+        </center>
+    </div>
+</body>
+</html>

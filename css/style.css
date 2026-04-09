@@ -1,4 +1,6 @@
 /* Basic reset and desktop setup */
+@import '98.css';
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +8,7 @@
 }
 
 body {
-    font-family: 'MS Sans Serif', 'Chicago', sans-serif;
+    font-family: 'Pixelated MS Sans Serif', 'MS Sans Serif', 'Chicago', sans-serif;
     background: #008080;
     overflow: hidden;
     height: 100vh;
@@ -390,11 +392,11 @@ iframe {
     pointer-events: none;
 }
 
-/* Custom font for boot screen */
-@font-face {
+/* Custom font for boot screen - commented out to avoid 404 */
+/* @font-face {
     font-family: 'PerfectDOSVGA437';
     src: url('assets/font/Perfect DOS VGA 437 Win.ttf') format('truetype');
-}
+} */
 
 /* Boot sequence */
 .boot-screen {

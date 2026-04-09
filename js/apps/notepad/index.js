@@ -1,6 +1,47 @@
 // js/apps/notepad/index.js
+
+function createButton(text, onClick, options = {}) {
+    const { default: isDefault = false, disabled = false } = options;
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.className = isDefault ? 'default' : '';
+    button.disabled = disabled;
+    if (onClick) {
+        button.addEventListener('click', onClick);
+    }
+    return button;
+}
+
+function createToolbar(items) {
+    const toolbar = document.createElement('div');
+    toolbar.style.display = 'flex';
+    toolbar.style.gap = '4px';
+    toolbar.style.padding = '4px';
+    items.forEach(item => {
+        if (typeof item === 'string') {
+            const button = createButton(item, null);
+            toolbar.appendChild(button);
+        } else {
+            toolbar.appendChild(item);
+        }
+    });
+    return toolbar;
+}
+
+function createDisplay(lcd = false) {
+    const display = document.createElement(lcd ? 'textarea' : 'input');
+    display.readOnly = true;
+    display.style.width = '100%';
+    display.style.boxSizing = 'border-box';
+    if (lcd) {
+        display.rows = 3;
+    }
+    return display;
+}
+
 export function createApp(container) {
     // Style container (white background, full size, flex column)
+    container.className = 'window-content'; // Use 98.css class
     container.style.cssText = `
         background: #FFFFFF;
         margin: 0;
@@ -12,29 +53,22 @@ export function createApp(container) {
         height: 100%;
         overflow: hidden;
     `;
+
     // Toolbar
-    const toolbar = document.createElement('div');
+    const toolbar = createToolbar(['File', 'Edit']);
     toolbar.id = 'toolbar';
-
-    const fileButton = document.createElement('button');
-    fileButton.id = 'file-button';
-    fileButton.textContent = 'File';
-    toolbar.appendChild(fileButton);
-
-    const editButton = document.createElement('button');
-    editButton.id = 'edit-button';
-    editButton.textContent = 'Edit';
-    toolbar.appendChild(editButton);
-
     container.appendChild(toolbar);
 
     // Main content
     const mainContent = document.createElement('div');
     mainContent.id = 'main-content';
+    mainContent.style.flex = '1';
+    mainContent.style.overflow = 'hidden';
 
-    const editor = document.createElement('textarea');
+    const editor = createDisplay(true); // textarea
     editor.id = 'editor';
     editor.placeholder = 'Type your notes here...';
+    editor.readOnly = false; // Make editable
     mainContent.appendChild(editor);
 
     container.appendChild(mainContent);
@@ -42,6 +76,9 @@ export function createApp(container) {
     // Footer
     const footer = document.createElement('div');
     footer.id = 'footer';
+    footer.style.padding = '4px';
+    footer.style.background = '#C0C0C0';
+    footer.style.borderTop = '1px inset #808080';
 
     const wordCount = document.createElement('span');
     wordCount.id = 'word-count';

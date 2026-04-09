@@ -27,6 +27,19 @@
   --border-thick: 2px solid;
   --button-size: 2.5rem; /* ~40px for toolbar buttons */
   --control-size: 1rem; /* ~16px */
+
+  /* Taskbar Tokens */
+  --taskbar-height: 2.25rem;
+  --taskbar-bg: silver;
+  --start-button-width: 4.5rem;
+  --clock-width: 4rem;
+  --taskbar-gap: 0.25rem;
+
+  /* Start Menu Tokens */
+  --menu-width: 16rem;
+  --menu-height: 24rem;
+  --menu-item-height: 1.5rem;
+  --submenu-offset: 16rem;
 }
 
 .notepad-window {
@@ -112,4 +125,122 @@
   font-size: var(--font-size-small);
   color: var(--color-text);
   flex-shrink: 0;
+}
+
+/* Taskbar & Start Menu Styles */
+#taskbar {
+  display: flex;
+  align-items: stretch;
+  height: var(--taskbar-height);
+  background: var(--taskbar-bg);
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf;
+  border-top: 2px outset #FFFFFF;
+}
+
+.start-button {
+  background: var(--taskbar-bg);
+  border: 2px outset #FFFFFF;
+  border-right: 2px outset #808080;
+  border-bottom: 2px outset #808080;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: inset 1px 1px 0 #FFFFFF, inset -1px -1px 0 #808080;
+  width: var(--start-button-width);
+}
+
+.start-button:active {
+  border: 2px inset #808080;
+  border-right: 2px inset #FFFFFF;
+  border-bottom: 2px inset #FFFFFF;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #FFFFFF;
+}
+
+#taskbar-windows {
+  flex: 1;
+  display: flex;
+  gap: var(--taskbar-gap);
+  overflow-x: auto;
+  padding: 0 var(--taskbar-gap);
+}
+
+#taskbar-clock {
+  width: var(--clock-width);
+  text-align: center;
+  border-left: 2px inset #808080;
+  padding: 0 0.5rem;
+}
+
+#start-menu {
+  position: fixed;
+  bottom: var(--taskbar-height);
+  left: 0;
+  width: var(--menu-width);
+  height: var(--menu-height);
+  background: silver;
+  box-shadow: inset -2px -2px grey, inset 2px 2px #dfdfdf;
+  display: none;
+  font-family: "Pixelated MS Sans Serif", Arial;
+}
+
+.menu-title-bar {
+  background: linear-gradient(90deg, navy, #1084d0);
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 2px 3px 3px;
+  height: 2rem;
+  align-items: center;
+}
+
+.menu-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: calc(100% - 2rem);
+  overflow-y: auto;
+}
+
+.menu-item {
+  height: var(--menu-item-height);
+  padding: 0 0.5rem;
+  cursor: pointer;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  display: flex;
+  align-items: center;
+}
+
+.menu-item:hover {
+  background: navy;
+  color: white;
+}
+
+.submenu {
+  position: absolute;
+  left: var(--submenu-offset);
+  top: 0;
+  width: 12rem;
+  background: silver;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf;
+  display: none;
+  z-index: 10;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.submenu-item {
+  height: var(--menu-item-height);
+  padding: 0 0.5rem;
+  cursor: pointer;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  display: flex;
+  align-items: center;
+}
+
+.submenu-item:hover {
+  background: navy;
+  color: white;
 }

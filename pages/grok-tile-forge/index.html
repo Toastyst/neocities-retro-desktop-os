@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TileForge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <header class="text-center py-6 bg-gray-800">
+        <h1 class="text-4xl font-bold text-green-400">🧱 TileForge</h1>
+        <p class="text-sm text-gray-400">Automated 32x32 Tileset Generation</p>
+        <p class="text-xs text-gray-500 mt-1">Press F12 → Console tab for detailed logs</p>
+    </header>
+
+    <div class="container mx-auto px-4 py-6">
+        <!-- API Key Section for optional Grok integration -->
+        <div class="mb-6">
+            <label for="apiKey" class="block text-sm font-medium mb-2">xAI Grok API Key (Optional)</label>
+            <div class="flex">
+                <input type="password" id="apiKey" class="flex-1 bg-gray-800 border border-gray-700 rounded-l px-3 py-2 text-white" placeholder="Enter your API key for base texture generation">
+                <button id="toggleKey" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-r">👁️</button>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Saved automatically to localStorage</p>
+        </div>
+
+        <!-- V2 Inputs -->
+        <div class="mb-6">
+            <div class="mb-4">
+                <label for="themeInput" class="block text-sm font-medium mb-2">Theme/Mood</label>
+                <input type="text" id="themeInput" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white" placeholder="e.g., dark fantasy, bright summer">
+            </div>
+            <div class="mb-4">
+                <label for="specificTilesInput" class="block text-sm font-medium mb-2">Specific Tiles</label>
+                <input type="text" id="specificTilesInput" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white" placeholder="e.g., iron door animation, stone walls">
+            </div>
+            <div class="mb-4">
+                <label for="materialsInput" class="block text-sm font-medium mb-2">Materials/Textures</label>
+                <input type="text" id="materialsInput" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white" placeholder="e.g., stone, wood, grass">
+            </div>
+        </div>
+
+        <!-- Generation Form -->
+        <form id="generateForm" class="bg-gray-800 p-6 rounded-lg mb-6">
+            <button type="submit" id="generateBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded disabled:opacity-50">
+                🚀 Generate Tileset
+            </button>
+        </form>
+
+        <!-- Progress -->
+        <div id="progress" class="hidden mb-6">
+            <div class="bg-gray-800 rounded-full h-4">
+                <div id="progressBar" class="bg-blue-600 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p id="progressText" class="text-center mt-2 text-sm">Initializing...</p>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <!-- Unmodified Grok Sheet -->
+            <div class="bg-gray-800 p-4 rounded-lg" id="checkpoint4">
+                <h3 class="text-lg font-semibold mb-2">Unmodified Grok Sheet</h3>
+                <canvas id="inputCanvas" class="bg-gray-700 rounded max-w-full h-auto"></canvas>
+            </div>
+
+            <!-- Processed 256x256 with Grid -->
+            <div class="bg-gray-800 p-4 rounded-lg" id="checkpoint1">
+                <h3 class="text-lg font-semibold mb-2">Processed 256x256 with Grid</h3>
+                <canvas id="resizedCanvas" class="bg-gray-700 rounded max-w-full h-auto" width="256" height="256"></canvas>
+            </div>
+
+            <!-- Chosen Tile -->
+            <div class="bg-gray-800 p-4 rounded-lg" id="checkpoint3">
+                <h3 class="text-lg font-semibold mb-2">Chosen Tile (32x32 + padding)</h3>
+                <canvas id="chosenTileCanvas" class="bg-gray-700 rounded max-w-full h-auto" width="38" height="38"></canvas>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="bg-gray-800 p-4 rounded-lg flex flex-wrap gap-2 justify-center">
+            <button id="generateBtnToolbar" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:opacity-50" disabled>
+                🔄 Regenerate
+            </button>
+            <button id="exportSheetBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50" disabled>
+                📥 Export Sheet PNG
+            </button>
+            <button id="exportJsonBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded disabled:opacity-50" disabled>
+                📄 Export JSON Manifest
+            </button>
+            <button id="exportCollisionBtn" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded disabled:opacity-50" disabled>
+                🏗️ Export Collision PNG
+            </button>
+            <button id="downloadAllBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded disabled:opacity-50" disabled>
+                📦 Download All
+            </button>
+        </div>
+    </div>
+
+    <script src="app.js" defer></script>
+    <script src="tests.js" defer></script>
+</body>
+</html>

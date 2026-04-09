@@ -37,6 +37,10 @@ function snapToGridCursor(element) {
 let browserHistory = ['home'];  // Browser navigation history
 let historyIndex = 0;           // Current position in history
 
+// Expose history for debugging
+window.browserHistory = browserHistory;
+window.historyIndex = historyIndex;
+
 // Boot Sequence Configuration
 const BOOT_SEQUENCE_CONFIG = {
     // Timing constants for different types of operations
@@ -387,11 +391,11 @@ function toggleStartMenu() {
     menu.innerHTML = buildMenu(startMenuItems);
     document.body.appendChild(menu);
 
-    // Position below start button
+    // Position above taskbar
     const startBtn = document.querySelector('.start-button');
     const rect = startBtn.getBoundingClientRect();
     menu.style.left = rect.left + 'px';
-    menu.style.top = rect.bottom + 'px';
+    menu.style.setProperty('bottom', 'var(--taskbar-height)');
 
     // Handle submenu clicks
     menu.addEventListener('click', (e) => {
@@ -414,12 +418,13 @@ function toggleStartMenu() {
 
     // Close on outside click
     setTimeout(() => {
-        document.addEventListener('click', function closeMenu(e) {
+        const closeMenu = (e) => {
             if (!menu.contains(e.target)) {
                 document.querySelectorAll('.start-menu').forEach(m => m.remove());
-                document.removeEventListener('click, closeMenu');
+                document.removeEventListener('click', closeMenu);
             }
-        });
+        };
+        document.addEventListener('click', closeMenu);
     }, 10);
 }
 
@@ -492,7 +497,7 @@ const desktopIcons = [
     {name: 'My Jeep XJ', col: 0, row: 3, action: () => openBrowser('jeep'), icon: 'icons/desktop/1jeep.jpg'},
     {name: '1996 Camry', col: 0, row: 4, action: () => openBrowser('camry'), icon: 'icons/desktop/1camry.jpg'},
     {name: 'Cool Links', col: 0, row: 5, action: () => openBrowser('links'), icon: 'icons/desktop/1links.jpg'},
-    {name: 'Meme Generator', col: 0, row: 6, action: () => openBrowser('meme'), icon: 'icons/desktop/1meme.jpg'},
+    {name: 'Meme Generator', col: 0, row: 6, action: () => openBrowser('meme-generator'), icon: 'icons/desktop/1meme.jpg'},
     {name: 'Chat Room', col: 1, row: 0, action: () => openBrowser('chat'), icon: 'icons/desktop/1chat.jpg'},
     {name: 'Music Player', col: 1, row: 1, action: () => openBrowser('music'), icon: 'icons/desktop/1music.jpg'},
     {name: 'My Computer', col: 1, row: 2, action: () => openWindow('My Computer', '<h2>My Computer</h2><p>System: Windows Toasty5</p><p>Processor: Intel Pentium III 500MHz</p><p>Memory: 128MB RAM</p><p>Hard Drive: 6GB</p><p>Connection: ' + (aolConnection.isConnected ? 'Online (56K)' : 'Offline') + '</p>'), icon: 'icons/desktop/1mypc.jpg'},
@@ -598,6 +603,19 @@ function showContextMenu(e) {
     document.querySelectorAll('.window-control.close').forEach(btn => {
         btn.addEventListener('click', (e) => closeWindow(e.target.closest('.window')));
     });
+
+    // Add AOL taskbar button
+    const aolBtn = document.createElement('div');
+    aolBtn.className = 'taskbar-aol';
+    aolBtn.style.cssText = 'background: #C0C0C0; border: 2px outset #FFFFFF; padding: 2px 8px; font-size: 12px; cursor: pointer; margin-left: 4px;';
+    aolBtn.onclick = () => openApp('solmerica');
+    document.getElementById('taskbar').appendChild(aolBtn);
+
+    window.updateAolStatus = () => {
+        aolBtn.innerHTML = '🌐 AOL: ' + (window.aolConnection.isConnected ? 'Online' : 'Offline');
+        aolBtn.style.background = window.aolConnection.isConnected ? '#00FF00' : '#FF0000';
+    };
+    window.updateAolStatus();
 }
 
 // Create a desktop icon
@@ -837,6 +855,21 @@ function openBrowser(url) {
         makeDraggable(browserWindow);
         makeResizable(browserWindow);
 
+        // Ensure flex layout for browser
+        const windowContent = browserWindow.querySelector('.window-content');
+        windowContent.style.display = 'flex';
+        windowContent.style.flexDirection = 'column';
+        windowContent.style.height = '100%';
+        const browserContent = browserWindow.querySelector('.browser-content');
+        browserContent.style.flex = '1';
+        browserContent.style.position = 'relative';
+        browserContent.style.overflow = 'hidden';
+        browserContent.style.padding = '0';
+        browserContent.style.margin = '0';
+        browserContent.style.width = '100%';
+        browserContent.style.height = '100%';
+        browserContent.style.boxSizing = 'border-box';
+
         // Add event listeners
         browserWindow.querySelector('#back-btn').addEventListener('click', () => navigateBack());
         browserWindow.querySelector('#forward-btn').addEventListener('click', () => navigateForward());
@@ -877,29 +910,58 @@ async function loadPage(pageName) {
 
     addressBar.value = pageName;
 
-    // Check AOL connection
-    if (!aolConnection.isConnected && pageName !== 'home') {
-        content.innerHTML = '<h1>The page cannot be displayed</h1><p>The page you are trying to view cannot be shown because the authenticity of the received data could not be verified.</p><p>URL: ' + addressBar.value + '</p><button onclick="openApp(\'solmerica\')">Connect to Solmerica Online</button>';
+    if (!window.aolConnection.isConnected && pageName !== 'home') {
+        content.innerHTML = `
+            <div style="padding: 20px; text-align: center; font-family: Arial, sans-serif;">
+                <h1>❌ No Internet Connection</h1>
+                <p>You must connect to the internet first to browse web pages.</p>
+                <button onclick="openApp('solmerica')" style="background: #C0C0C0; border: 2px outset #FFFFFF; padding: 10px 20px; font-size: 16px; cursor: pointer;">Launch Solmerica Online & Connect</button>
+                <p style="font-size: 12px; color: #666; margin-top: 20px;">Status: ${window.aolConnection.status}</p>
+            </div>
+        `;
+        return;
+    }
+
+    const complexPages = ['meme-generator', 'goblin-animation-completer', 'grok-sprite-forge', 'grok-tile-forge'];
+    if (complexPages.includes(pageName)) {
+        content.innerHTML = `<iframe id="page-iframe" src="pages/${pageName}/index.html" style="width: 100%; height: 100%; border: none; display: block;"></iframe>`;
+        content.style.background = '';
+        content.style.color = '';
+        content.style.padding = '';
+        content.style.display = '';
+        content.style.flexDirection = '';
+        content.style.alignItems = '';
+        content.style.justifyContent = '';
+        content.style.minHeight = '';
+        // Update history
+        if (pageName !== browserHistory[historyIndex]) {
+            browserHistory = browserHistory.slice(0, historyIndex + 1);
+            browserHistory.push(pageName);
+            historyIndex = browserHistory.length - 1;
+        }
         return;
     }
 
     try {
-        // Try flat .html first
-        let resp = await fetch(`pages/${pageName}.html`);
-        if (!resp.ok) {
-            // Fallback to subdir/index.html
-            resp = await fetch(`pages/${pageName}/index.html`);
-        }
+        // Fetch subdir/index.html
+        const resp = await fetch(`pages/${pageName}/index.html`);
         if (resp.ok) {
             const html = await resp.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             content.innerHTML = doc.body.innerHTML;
+            // Update history
+            if (pageName !== browserHistory[historyIndex]) {
+                browserHistory = browserHistory.slice(0, historyIndex + 1);
+                browserHistory.push(pageName);
+                historyIndex = browserHistory.length - 1;
+            }
             return;
         }
     } catch (e) {
         // Fetch failed or 404, fallback to inline
     }
+
     // Comprehensive Geocities-style pages
     const pages = {
         'home': `
@@ -1684,11 +1746,6 @@ async function loadPage(pageName) {
     content.innerHTML = pages[pageName] || '<h1>Page Not Found</h1><p>The page you requested does not exist.</p>';
     addressBar.value = pageName;
 
-    // Play car horns if connected
-    if ((pageName === 'jeep' || pageName === 'camry') && aolConnection.isConnected) {
-        playSound('horn.wav');
-    }
-
     // Update history
     if (pageName !== browserHistory[historyIndex]) {
         browserHistory = browserHistory.slice(0, historyIndex + 1);
@@ -1927,6 +1984,11 @@ function playRandomMIDI() {
     const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
     playMIDI(randomTrack);
 }
+
+// Expose loadPage globally for HTML onclick handlers
+window.loadPage = loadPage;
+window.navigateBack = navigateBack;
+window.navigateForward = navigateForward;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', initBootSequence);

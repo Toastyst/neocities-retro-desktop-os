@@ -76,6 +76,19 @@ export function createApp(container) {
                     </div>
                 `;
                 break;
+            case 'dashboard':
+                windowEl.querySelector('span').textContent = 'Solmerica Online - Connected';
+                windowEl.style.width = '500px';
+                windowEl.style.height = '400px';
+                contentEl.innerHTML = `
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; padding: 20px;">
+                        <img src="icons/AOL/logo_long.png" alt="Logo" class="sol-logo" style="max-width: 300px; max-height: 100px; margin-bottom: 20px;">
+                        <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">Connected at 56,000 bps</div>
+                        <div style="margin-bottom: 20px;">You are now online and can browse the web!</div>
+                        <button class="sol-button" id="disconnectBtn">Disconnect</button>
+                    </div>
+                `;
+                break;
         }
 
         bindEvents();
@@ -116,7 +129,19 @@ export function createApp(container) {
                 window.aolConnection.isConnected = true;
                 window.aolConnection.speed = 56000;
                 window.aolConnection.status = 'Connected at 56,000 bps';
-                closeWindow(windowEl);
+                if (window.updateAolStatus) window.updateAolStatus();
+                solState.currentScreen = 'dashboard';
+                buildScreen();
+            });
+        } else if (solState.currentScreen === 'dashboard') {
+            const disconnectBtn = contentEl.querySelector('#disconnectBtn');
+            disconnectBtn.addEventListener('click', () => {
+                window.aolConnection.isConnected = false;
+                window.aolConnection.speed = 0;
+                window.aolConnection.status = 'Disconnected';
+                if (window.updateAolStatus) window.updateAolStatus();
+                solState.currentScreen = 'welcome';
+                buildScreen();
             });
         }
     }
@@ -133,14 +158,14 @@ export function createApp(container) {
     }
 
     function startAnim() {
-        playSound('boot.wav');
+        if(window.playSound) window.playSound('boot.wav'); else new Audio('boot.wav').play();
         solState.animationInterval = setInterval(() => {
             solState.animStep++;
             updateAnim();
             if (solState.animStep >= 3) {
                 clearInterval(solState.animationInterval);
                 solState.animationInterval = null;
-                advanceScreen();
+                setTimeout(() => advanceScreen(), 3000);  // Delay to show 3rd frame
             }
         }, 2000);
     }
@@ -165,8 +190,12 @@ export function createApp(container) {
 
         if (solState.animStep === 1) {
             stepText.textContent = 'Step 2: Connecting to Solmerica Online';
+            if(window.playSound) window.playSound('sounds/modem-dial.wav'); else new Audio('sounds/modem-dial.wav').play();
         } else if (solState.animStep === 2) {
             stepText.textContent = 'Step 3: Connected at 56,000 bps';
+            if(window.playSound) window.playSound('sounds/modem-handshake.mp3'); else new Audio('sounds/modem-handshake.mp3').play();
+        } else if (solState.animStep === 3) {
+            if(window.playSound) window.playSound('sounds/modem-connected.wav'); else new Audio('sounds/modem-connected.wav').play();
         }
     }
 
