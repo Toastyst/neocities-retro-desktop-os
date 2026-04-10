@@ -64,17 +64,17 @@ export function createApp(container) {
     ];
 
     const buttonActions = [
-        'clearDisplay()', "appendToDisplay('/')", "appendToDisplay('*')", 'backspace()',
-        "appendToDisplay('7')", "appendToDisplay('8')", "appendToDisplay('9')", "appendToDisplay('-')",
-        "appendToDisplay('4')", "appendToDisplay('5')", "appendToDisplay('6')", "appendToDisplay('+')",
-        "appendToDisplay('1')", "appendToDisplay('2')", "appendToDisplay('3')", 'calculate()',
-        "appendToDisplay('0')", "appendToDisplay('.')"
+        () => clearDisplay(), () => appendToDisplay('/'), () => appendToDisplay('*'), () => backspace(),
+        () => appendToDisplay('7'), () => appendToDisplay('8'), () => appendToDisplay('9'), () => appendToDisplay('-'),
+        () => appendToDisplay('4'), () => appendToDisplay('5'), () => appendToDisplay('6'), () => appendToDisplay('+'),
+        () => appendToDisplay('1'), () => appendToDisplay('2'), () => appendToDisplay('3'), () => calculate(),
+        () => appendToDisplay('0'), () => appendToDisplay('.')
     ];
 
     buttonLabels.forEach((label, index) => {
         const button = document.createElement('button');
         button.textContent = label;
-        button.onclick = () => eval(buttonActions[index]);
+        button.onclick = buttonActions[index];
         button.style.cssText = `
             background: linear-gradient(135deg, #C0C0C0 0%, #D0D0D0 100%);
             border: 2px outset #FFFFFF;
@@ -110,29 +110,29 @@ export function createApp(container) {
         display.textContent = currentInput;
     }
 
-    window.clearDisplay = function() {
+    function clearDisplay() {
         currentInput = '0';
         operator = null;
         previousInput = null;
         updateDisplay();
-    };
+    }
 
-    window.appendToDisplay = function(value) {
+    function appendToDisplay(value) {
         if (currentInput === '0' && value !== '.') {
             currentInput = value;
         } else {
             currentInput += value;
         }
         updateDisplay();
-    };
+    }
 
-    window.backspace = function() {
+    function backspace() {
         currentInput = currentInput.slice(0, -1);
         if (currentInput === '') currentInput = '0';
         updateDisplay();
-    };
+    }
 
-    window.calculate = function() {
+    function calculate() {
         try {
             const result = eval(currentInput);
             currentInput = result.toString();
@@ -142,10 +142,12 @@ export function createApp(container) {
             updateDisplay();
             setTimeout(() => clearDisplay(), 1000);
         }
-    };
+    }
 
     function resize(newWidth, newHeight) {
-        // Fixed-center: do nothing, calculator stays centered and fixed size
+        const scale = Math.min(newWidth / 220, newHeight / 280) || 1;
+        calculator.style.transform = `scale(${scale})`;
+        calculator.style.transformOrigin = 'center';
     }
 
     function destroy() {

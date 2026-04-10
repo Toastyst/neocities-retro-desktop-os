@@ -1,69 +1,115 @@
-<div class="geocities-page">
-    <div class="geocities-header">🔗 Cool Links & Webrings - Surf the Web! 🔗</div>
-    <div class="geocities-marquee">★★★ NETSURFING CENTRAL ★★★ The best sites on the information superhighway! ★★★</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool Links - Web Surfing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #008080;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+        }
+        .geocities-page {
+            background: #FFFFFF;
+            border: 3px outset #C0C0C0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .geocities-header {
+            background: linear-gradient(45deg, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF);
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px inset #808080;
+        }
+        .geocities-marquee {
+            background: #000000;
+            color: #FFFF00;
+            text-align: center;
+            padding: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .geocities-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .geocities-table td {
+            border: 2px outset #C0C0C0;
+            padding: 10px;
+            vertical-align: top;
+        }
+        a {
+            color: #0000FF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="geocities-page">
+        <div class="geocities-header">🔗 Cool Links - Web Surfing 🔗</div>
+        <div class="geocities-marquee">★★★ SURF THE WEB! ★★★ Explore the information superhighway! ★★★</div>
 
-    <table class="geocities-table">
-        <tr>
-            <td colspan="2">
-                <center>
-                    <font size="+2"><b>🌐 My Favorite Websites 🌐</b></font>
-                    <br><br>
-                    <i>"The Web is a vast and wonderful place!"</i>
-                </center>
-            </td>
-        </tr>
-        <tr>
-            <td width="50%">
-                <h2>🎮 Gaming Sites</h2>
-                <ul>
-                    <li><a href="#" onclick="loadPage('gaming')">My Retro Gaming Gallery</a></li>
-                    <li><a href="https://example.com" target="_blank">Classic Gaming Museum</a></li>
-                    <li><a href="https://example.com" target="_blank">Retro Game Reviews</a></li>
-                    <li><a href="https://example.com" target="_blank">Emulator Zone</a></li>
-                </ul>
+        <table class="geocities-table">
+            <tr>
+                <td colspan="2">
+                    <center>
+                        <font size="+2" color="#FF0000"><b>🌐 My Favorite Websites 🌐</b></font>
+                        <br><br>
+                        <i>"The web is a vast ocean of knowledge!"</i>
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <h2>💻 Tech & Computing</h2>
+                    <ul>
+                        <li><a href="https://www.mozilla.org" target="_blank">Mozilla Firefox</a> - Best browser!</li>
+                        <li><a href="https://www.linux.org" target="_blank">Linux</a> - Free operating system</li>
+                        <li><a href="https://github.com" target="_blank">GitHub</a> - Code sharing</li>
+                        <li><a href="https://neocities.org" target="_blank">Neocities</a> - Free web hosting</li>
+                    </ul>
+                </td>
+                <td width="50%">
+                    <h2>🎮 Gaming</h2>
+                    <ul>
+                        <li><a href="https://www.retrogames.com" target="_blank">Retro Games</a> - Classic games</li>
+                        <li><a href="https://www.emulator-zone.com" target="_blank">Emulator Zone</a> - Emulators</li>
+                        <li><a href="https://www.rom-world.com" target="_blank">ROM World</a> - Game ROMs</li>
+                        <li><a href="https://www.speedrun.com" target="_blank">Speedrun.com</a> - Speedrunning</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h2>🎵 Music & Media</h2>
+                    <ul>
+                        <li><a href="https://www.youtube.com" target="_blank">YouTube</a> - Videos</li>
+                        <li><a href="https://www.last.fm" target="_blank">Last.fm</a> - Music discovery</li>
+                        <li><a href="https://www.archive.org" target="_blank">Internet Archive</a> - Free media</li>
+                        <li><a href="https://www.midimusic.com" target="_blank">MIDI Music</a> - Retro tunes</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
 
-                <h2>🚗 Car Enthusiast Sites</h2>
-                <ul>
-                    <li><a href="#" onclick="loadPage('jeep')">My Jeep XJ Page</a></li>
-                    <li><a href="#" onclick="loadPage('camry')">My Camry Page</a></li>
-                    <li><a href="https://example.com" target="_blank">Off-Road Adventures</a></li>
-                    <li><a href="https://example.com" target="_blank">Classic Car Club</a></li>
-                </ul>
-            </td>
-            <td width="50%">
-                <h2>💻 Tech & Retro Sites</h2>
-                <ul>
-                    <li><a href="https://neocities.org" target="_blank">Neocities</a></li>
-                    <li><a href="https://example.com" target="_blank">Vintage Computing</a></li>
-                    <li><a href="https://example.com" target="_blank">DOS Games Archive</a></li>
-                    <li><a href="https://example.com" target="_blank">Web Design Museum</a></li>
-                </ul>
-
-                <h2>🎵 Music & Culture</h2>
-                <ul>
-                    <li><a href="#" onclick="loadPage('music')">My MIDI Collection</a></li>
-                    <li><a href="https://example.com" target="_blank">90s Music Archive</a></li>
-                    <li><a href="https://example.com" target="_blank">Chiptune Radio</a></li>
-                    <li><a href="https://example.com" target="_blank">Retro Culture Blog</a></li>
-                </ul>
-            </td>
-        </tr>
-    </table>
-
-    <div class="geocities-guestbook">
-        <center><b>Webring Membership</b></center>
-        <hr>
         <center>
-            <a href="https://example.com" target="_blank">[Previous Site]</a> |
-            <a href="https://example.com" target="_blank">[Random Site]</a> |
-            <a href="https://example.com" target="_blank">[Next Site]</a>
+            <font size="-1" color="#808080">
+                <a href="#" onclick="window.dispatchEvent(new CustomEvent('navigatePage', {detail: 'home'}))">← Back to Home</a> |
+                <a href="#" onclick="window.dispatchEvent(new CustomEvent('navigatePage', {detail: 'guestbook'}))">Sign Guestbook</a>
+            </font>
         </center>
     </div>
-
-    <center>
-        <font size="-1" color="#808080">
-            <a href="#" onclick="loadPage('home')">← Back to Home</a> |
-            <a href="#" onclick="loadPage('guestbook')">Join the Community</a>
-        </font>
-    </center>
-</div>
+</body>
+</html>

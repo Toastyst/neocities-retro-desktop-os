@@ -41,7 +41,6 @@ function createDisplay(lcd = false) {
 
 export function createApp(container) {
     // Style container (white background, full size, flex column)
-    container.className = 'window-content'; // Use 98.css class
     container.style.cssText = `
         background: #FFFFFF;
         margin: 0;

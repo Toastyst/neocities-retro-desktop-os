@@ -1,87 +1,199 @@
-<div class="geocities-page">
-    <div class="geocities-header">🎵 Music Collection - Listen to the Sounds! 🎵</div>
-    <div class="geocities-marquee">★★★ MIDI CENTRAL ★★★ 90s music that takes you back! ★★★</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player - Listen Up!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #008080;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+        }
+        .geocities-page {
+            background: #FFFFFF;
+            border: 3px outset #C0C0C0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .geocities-header {
+            background: linear-gradient(45deg, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF);
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px inset #808080;
+        }
+        .geocities-marquee {
+            background: #000000;
+            color: #FFFF00;
+            text-align: center;
+            padding: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .music-player {
+            background: #C0C0C0;
+            border: 2px inset #808080;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .music-controls {
+            margin: 10px 0;
+        }
+        .music-button {
+            background: #FFFFFF;
+            border: 2px outset #C0C0C0;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .playlist {
+            background: #FFFFFF;
+            border: 2px inset #C0C0C0;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .playlist-item {
+            padding: 5px;
+            cursor: pointer;
+            border-bottom: 1px solid #C0C0C0;
+        }
+        .playlist-item:hover {
+            background: #E0E0E0;
+        }
+        .playlist-item.playing {
+            background: #FFFF00;
+            font-weight: bold;
+        }
+        a {
+            color: #0000FF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="geocities-page">
+        <div class="geocities-header">🎵 Music Player - Listen Up! 🎵</div>
+        <div class="geocities-marquee">★★★ TUNE IN! ★★★ Enjoy retro MIDI music! ★★★</div>
 
-    <table class="geocities-table">
-        <tr>
-            <td colspan="2">
-                <center>
-                    <font size="+2"><b>🎼 MIDI Music Archive 🎼</b></font>
-                    <br><br>
-                    <i>"Relive the golden age of computer music!"</i>
-                </center>
-            </td>
-        </tr>
-        <tr>
-            <td width="60%">
-                <h2>🎹 Featured Tracks</h2>
-                <div id="music-player">
-                    <div style="border: 2px outset #FFFFFF; padding: 10px; background: #C0C0C0; margin-bottom: 20px;">
-                        <b>Now Playing:</b> <span id="current-track">Super Mario World Theme</span><br>
-                        <audio id="midi-player" controls style="width: 100%; margin: 10px 0;">
-                            Your browser doesn't support audio playback.
-                        </audio>
-                        <button onclick="playRandomTrack()" style="background: #C0C0C0; border: 2px outset #FFFFFF; padding: 4px 12px;">🎲 Random Track</button>
-                    </div>
-                </div>
+        <div class="music-player">
+            <h3>🎼 Retro MIDI Player</h3>
+            <div id="current-track">No track selected</div>
+            <div class="music-controls">
+                <button class="music-button" onclick="previousTrack()">⏮️</button>
+                <button class="music-button" onclick="playPause()">▶️⏸️</button>
+                <button class="music-button" onclick="nextTrack()">⏭️</button>
+                <button class="music-button" onclick="stopTrack()">⏹️</button>
+            </div>
+            <div>
+                <input type="range" id="volume-slider" min="0" max="100" value="50" onchange="setVolume(this.value)">
+                <label for="volume-slider">Volume</label>
+            </div>
+        </div>
 
-                <h2>📀 Track List</h2>
-                <div id="track-list">
-                    <div class="geocities-guestbook" style="margin-bottom: 10px;">
-                        <b>🎮 Video Game Themes</b><br>
-                        <a href="#" onclick="playTrack('mario.mid')">Super Mario World</a> |
-                        <a href="#" onclick="playTrack('zelda.mid')">The Legend of Zelda</a> |
-                        <a href="#" onclick="playTrack('sonic.mid')">Sonic the Hedgehog</a> |
-                        <a href="#" onclick="playTrack('tetris.mid')">Tetris</a> |
-                        <a href="#" onclick="playTrack('pacman.mid')">Pac-Man</a>
-                    </div>
+        <h2>📀 Playlist</h2>
+        <div class="playlist" id="playlist">
+            <div class="playlist-item" onclick="playTrack(0)">🎵 Super Mario World Theme</div>
+            <div class="playlist-item" onclick="playTrack(1)">🎵 Zelda's Lullaby</div>
+            <div class="playlist-item" onclick="playTrack(2)">🎵 Sonic the Hedgehog</div>
+            <div class="playlist-item" onclick="playTrack(3)">🎵 Tetris Theme</div>
+            <div class="playlist-item" onclick="playTrack(4)">🎵 Pac-Man</div>
+            <div class="playlist-item" onclick="playTrack(5)">🎵 Final Fantasy Victory</div>
+            <div class="playlist-item" onclick="playTrack(6)">🎵 Mega Man Theme</div>
+            <div class="playlist-item" onclick="playTrack(7)">🎵 Castlevania</div>
+            <div class="playlist-item" onclick="playTrack(8)">🎵 Chrono Trigger</div>
+            <div class="playlist-item" onclick="playTrack(9)">🎵 EarthBound</div>
+        </div>
 
-                    <div class="geocities-guestbook" style="margin-bottom: 10px;">
-                        <b>🎵 Popular Songs</b><br>
-                        <a href="#" onclick="playTrack('careless.mid')">Careless Whisper</a> |
-                        <a href="#" onclick="playTrack('billie.mid')">Billie Jean</a> |
-                        <a href="#" onclick="playTrack('stairway.mid')">Stairway to Heaven</a> |
-                        <a href="#" onclick="playTrack('hotel.mid')">Hotel California</a> |
-                        <a href="#" onclick="playTrack('bohemian.mid')">Bohemian Rhapsody</a>
-                    </div>
+        <script>
+            let currentTrackIndex = -1;
+            let isPlaying = false;
+            const tracks = [
+                'mario.mid',
+                'zelda.mid',
+                'sonic.mid',
+                'tetris.mid',
+                'pacman.mid',
+                'ff.mid',
+                'megaman.mid',
+                'castlevania.mid',
+                'chrono.mid',
+                'earthbound.mid'
+            ];
 
-                    <div class="geocities-guestbook" style="margin-bottom: 10px;">
-                        <b>🎸 Classic Rock</b><br>
-                        <a href="#" onclick="playTrack('smoke.mid')">Smoke on the Water</a> |
-                        <a href="#" onclick="playTrack('more.mid')">We Want More</a> |
-                        <a href="#" onclick="playTrack('highway.mid')">Highway to Hell</a> |
-                        <a href="#" onclick="playTrack('back.mid')">Back in Black</a>
-                    </div>
-                </div>
-            </td>
-            <td width="40%">
-                <div class="geocities-sidebar">
-                    <center><b>Music Library</b></center>
-                    <hr>
-                    <b>Total Tracks:</b> 47<br>
-                    <b>Genres:</b> Game, Pop, Rock<br>
-                    <b>Format:</b> MIDI<br>
-                    <b>Player:</b> Built-in browser<br>
-                    <br>
-                    <b>Download Collection:</b><br>
-                    <a href="#" onclick="downloadFile('midi-collection.zip')">📥 Download All MIDI Files</a>
-                </div>
+            function playTrack(index) {
+                currentTrackIndex = index;
+                updateDisplay();
+                // In a real implementation, this would load and play MIDI files
+                alert('Playing: ' + tracks[index] + ' (MIDI playback would require additional libraries)');
+            }
 
-                <h3>🎧 Listening Tips</h3>
-                <ul>
-                    <li>Use headphones for best quality</li>
-                    <li>MIDI sounds different on each computer</li>
-                    <li>Some tracks may not play in all browsers</li>
-                    <li>Download the collection for offline listening</li>
-                </ul>
-            </td>
-        </tr>
-    </table>
+            function playPause() {
+                isPlaying = !isPlaying;
+                updateDisplay();
+                if (isPlaying) {
+                    alert('Playing track...');
+                } else {
+                    alert('Paused');
+                }
+            }
 
-    <center>
-        <font size="-1" color="#808080">
-            <a href="#" onclick="loadPage('home')">← Back to Home</a> |
-            <a href="#" onclick="loadPage('downloads')">More Downloads</a>
-        </font>
-    </center>
-</div>
+            function stopTrack() {
+                isPlaying = false;
+                updateDisplay();
+                alert('Stopped');
+            }
+
+            function nextTrack() {
+                if (currentTrackIndex < tracks.length - 1) {
+                    playTrack(currentTrackIndex + 1);
+                }
+            }
+
+            function previousTrack() {
+                if (currentTrackIndex > 0) {
+                    playTrack(currentTrackIndex - 1);
+                }
+            }
+
+            function setVolume(volume) {
+                alert('Volume set to ' + volume + '%');
+            }
+
+            function updateDisplay() {
+                const display = document.getElementById('current-track');
+                const items = document.querySelectorAll('.playlist-item');
+
+                items.forEach((item, index) => {
+                    item.classList.remove('playing');
+                });
+
+                if (currentTrackIndex >= 0) {
+                    display.textContent = 'Now Playing: ' + tracks[currentTrackIndex].replace('.mid', '');
+                    items[currentTrackIndex].classList.add('playing');
+                } else {
+                    display.textContent = 'No track selected';
+                }
+            }
+        </script>
+
+        <center>
+            <font size="-1" color="#808080">
+                <a href="#" onclick="window.dispatchEvent(new CustomEvent('navigatePage', {detail: 'home'}))">← Back to Home</a> |
+                <a href="#" onclick="window.dispatchEvent(new CustomEvent('navigatePage', {detail: 'downloads'}))">Download MIDI Files</a>
+            </font>
+        </center>
+    </div>
+</body>
+</html>

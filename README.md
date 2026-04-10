@@ -2,11 +2,17 @@
 
 A fully functional 1995 Windows 95/98 desktop emulation built with vanilla HTML5, CSS3, and JavaScript.
 
+## Important Notes
+
+- **AOL Gate Feature**: The browser includes an AOL-style connection gate that requires "connecting" to access web pages. This is a core retro authenticity feature and should NOT be removed.
+- **Modular Architecture**: The codebase has been refactored into managers (BootManager, WindowManager, DesktopManager, etc.) for better maintainability.
+- **Configuration**: Desktop icons, start menu, and boot sequence are now configurable via JSON files in `js/config/`.
+
 ## Features
 
 - **Boot Sequence**: Authentic BIOS-style startup with scrolling text and sounds
 - **Desktop Environment**: Draggable/resizable windows, taskbar with clock, desktop icons with snap system
-- **Browser**: Built-in web browser 
+- **Browser**: Built-in web browser
 - **Applications**: Calculator, Paint, Solitaire, Notepad (toolbar/textarea/word count), Meme Generator, Solmerica Online (dial-up simulator)
 - **Audio System**: HTML5 audio with ambient HDD loop, sound effects
 - **Start Menu**: Hierarchical menu system with programs and settings

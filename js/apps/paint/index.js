@@ -42,6 +42,7 @@ export function createApp(container) {
     let history = [];
     let redoStack = [];
     let drawing = false;
+    let startX, startY;
 
     // Create sprite canvas (offscreen)
     const spriteCanvas = document.createElement('canvas');
@@ -116,9 +117,9 @@ export function createApp(container) {
         { id: 'zoomIn', label: '+', action: () => zoomIn() },
         { id: 'zoomOut', label: '-', action: () => zoomOut() },
         { id: 'paletteToggle', label: '16', action: () => togglePalette() },
-        // TODO placeholders
-        { id: 'line', label: 'Line\nTODO', action: () => console.log('TODO: Line tool'), disabled: true },
-        { id: 'rect', label: 'Rect\nTODO', action: () => console.log('TODO: Rectangle tool'), disabled: true },
+        // Basic tools
+        { id: 'line', label: 'Line', action: () => setTool('line') },
+        { id: 'rect', label: 'Rect', action: () => setTool('rect') },
         { id: 'ellipse', label: 'Ellipse\nTODO', action: () => console.log('TODO: Ellipse tool'), disabled: true },
         { id: 'fill', label: 'Fill\nTODO', action: () => console.log('TODO: Fill tool'), disabled: true },
         { id: 'select', label: 'Select\nTODO', action: () => console.log('TODO: Select tool'), disabled: true },
@@ -436,6 +437,70 @@ export function createApp(container) {
         });
     }
 
+    function drawLinePixels(x0, y0, x1, y1, color) {
+        const dx = Math.abs(x1 - x0);
+        const dy = Math.abs(y1 - y0);
+        const sx = x0 < x1 ? 1 : -1;
+        const sy = y0 < y1 ? 1 : -1;
+        let err = dx - dy;
+        let x = x0;
+        let y = y0;
+        while (true) {
+            setPixel(x, y, color);
+            if (x === x1 && y === y1) break;
+            const e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y += sy;
+            }
+        }
+    }
+
+    function drawRectPixels(x0, y0, x1, y1, color) {
+        const minX = Math.min(x0, x1);
+        const maxX = Math.max(x0, x1);
+        const minY = Math.min(y0, y1);
+        const maxY = Math.max(y0, y1);
+        for (let i = minX; i <= maxX; i++) {
+            for (let j = minY; j <= maxY; j++) {
+                setPixel(i, j, color);
+            }
+        }
+    }
+
+    function drawPreview(e) {
+        const { x, y } = getPixelPos(e);
+        const color = e.button === 0 ? primary : secondary;
+        mainCtx.strokeStyle = `rgb(${color.r},${color.g},${color.b})`;
+        mainCtx.lineWidth = 1;
+        if (currentTool === 'line') {
+            mainCtx.beginPath();
+            mainCtx.moveTo(startX * pixelSize + pixelSize / 2, startY * pixelSize + pixelSize / 2);
+            mainCtx.lineTo(x * pixelSize + pixelSize / 2, y * pixelSize + pixelSize / 2);
+            mainCtx.stroke();
+        } else if (currentTool === 'rect') {
+            const minX = Math.min(startX, x) * pixelSize;
+            const minY = Math.min(startY, y) * pixelSize;
+            const w = Math.abs(x - startX) * pixelSize;
+            const h = Math.abs(y - startY) * pixelSize;
+            mainCtx.strokeRect(minX, minY, w, h);
+        }
+    }
+
+    function drawFinal(e) {
+        const { x, y } = getPixelPos(e);
+        const color = e.button === 0 ? primary : secondary;
+        if (currentTool === 'line') {
+            drawLinePixels(startX, startY, x, y, color);
+        } else if (currentTool === 'rect') {
+            drawRectPixels(startX, startY, x, y, color);
+        }
+    }
+
     // Event handlers
     container.tabIndex = 0;
     container.focus();
@@ -450,16 +515,37 @@ export function createApp(container) {
 
     mainCanvas.addEventListener('mousedown', e => {
         e.preventDefault();
-        saveState();
-        drawing = true;
-        draw(e);
+        const { x, y } = getPixelPos(e);
+        if (currentTool === 'line' || currentTool === 'rect') {
+            saveState();
+            drawing = true;
+            startX = x;
+            startY = y;
+        } else {
+            saveState();
+            drawing = true;
+            draw(e);
+        }
     });
 
     mainCanvas.addEventListener('mousemove', e => {
-        if (drawing) draw(e);
+        if (drawing) {
+            if (currentTool === 'line' || currentTool === 'rect') {
+                redrawMain();
+                drawPreview(e);
+            } else {
+                draw(e);
+            }
+        }
     });
 
-    mainCanvas.addEventListener('mouseup', () => {
+    mainCanvas.addEventListener('mouseup', e => {
+        if (drawing && (currentTool === 'line' || currentTool === 'rect')) {
+            drawFinal(e);
+            spriteCtx.putImageData(imageData, 0, 0);
+            redrawMain();
+            redrawPreview();
+        }
         drawing = false;
     });
 

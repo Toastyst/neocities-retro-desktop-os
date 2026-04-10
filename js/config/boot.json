@@ -1,0 +1,59 @@
+{
+  "TIMINGS": {
+    "FAST": 200,
+    "NORMAL": 400,
+    "SLOW": 800,
+    "BIOS_HEADER": 300,
+    "POST_START": 500,
+    "COMPONENT_CHECK": 350,
+    "FINAL_LOAD": 1500
+  },
+  "SOUNDS": {
+    "BIOS_BEEP": "boot.wav",
+    "POST_COMPLETE": "boot.wav",
+    "HDD_ACCESS": "boot.wav",
+    "BOOT_SUCCESS": "boot.wav"
+  },
+  "defaultOptions": {
+    "speed": "normal",
+    "os": "windows95",
+    "hardware": "standard"
+  },
+  "hardwareConfigs": {
+    "standard": {
+      "cpu": "Intel Pentium III 500MHz",
+      "ram": "128MB RAM",
+      "hdd": "6GB IDE",
+      "cdrom": "52x",
+      "video": "VGA Compatible"
+    },
+    "gaming": {
+      "cpu": "Intel Pentium III 600MHz",
+      "ram": "256MB RAM",
+      "hdd": "20GB IDE",
+      "cdrom": "56x",
+      "video": "VESA Compatible"
+    },
+    "minimal": {
+      "cpu": "Intel 486DX 66MHz",
+      "ram": "16MB RAM",
+      "hdd": "500MB IDE",
+      "cdrom": "4x",
+      "video": "CGA Compatible"
+    }
+  },
+  "osConfigs": {
+    "windows95": {
+      "bios": "IBM Personal Computer AT\nVersion A04  01/10/86\n\n",
+      "osLoad": "Loading Windows 95...\n\n"
+    },
+    "windows98": {
+      "bios": "Award Modular BIOS v4.51PG\n04/07/98\n\n",
+      "osLoad": "Loading Windows 98...\n\n"
+    },
+    "dos": {
+      "bios": "Phoenix 80386 ROM BIOS PLUS Version 1.10\n\n",
+      "osLoad": "Loading MS-DOS 6.22...\n\n"
+    }
+  }
+}

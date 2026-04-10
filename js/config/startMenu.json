@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Programs",
+    "submenu": [
+      {
+        "name": "Accessories",
+        "submenu": [
+          {
+            "name": "Notepad",
+            "action": "Notepad"
+          },
+          {
+            "name": "Calculator",
+            "action": "Calculator"
+          }
+        ]
+      },
+      {
+        "name": "Games",
+        "submenu": [
+          {
+            "name": "Solitaire",
+            "action": "Solitaire"
+          },
+          {
+            "name": "Solmerica Online",
+            "action": "Solmerica Online"
+          },
+          {
+            "name": "Minesweeper",
+            "action": "Minesweeper"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Documents",
+    "action": "Documents"
+  },
+  {
+    "name": "Settings",
+    "action": "Settings"
+  },
+  {
+    "name": "Find",
+    "action": "Find"
+  },
+  {
+    "name": "Help",
+    "action": "Help"
+  },
+  {
+    "name": "Run...",
+    "action": "Run..."
+  },
+  {
+    "name": "-",
+    "action": null
+  },
+  {
+    "name": "Shut Down...",
+    "action": "Shut Down..."
+  }
+]

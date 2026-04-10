@@ -1,81 +1,126 @@
-<div class="geocities-page">
-    <div class="geocities-header">💬 Chat Room - Join the Conversation! 💬</div>
-    <div class="geocities-marquee">★★★ WELCOME TO THE CHAT ★★★ Talk with other visitors! ★★★</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room - Talk Here!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #008080;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+        }
+        .geocities-page {
+            background: #FFFFFF;
+            border: 3px outset #C0C0C0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .geocities-header {
+            background: linear-gradient(45deg, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF);
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px inset #808080;
+        }
+        .geocities-marquee {
+            background: #000000;
+            color: #FFFF00;
+            text-align: center;
+            padding: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .chat-container {
+            background: #000000;
+            color: #00FF00;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            border: 2px inset #C0C0C0;
+            margin-bottom: 10px;
+        }
+        .chat-input {
+            width: 100%;
+            padding: 5px;
+            font-family: 'Courier New', monospace;
+            background: #FFFFFF;
+            border: 2px inset #C0C0C0;
+        }
+        .chat-button {
+            background: #C0C0C0;
+            border: 2px outset #FFFFFF;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        a {
+            color: #0000FF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="geocities-page">
+        <div class="geocities-header">💬 Chat Room - Talk Here! 💬</div>
+        <div class="geocities-marquee">★★★ WELCOME TO THE CHAT! ★★★ Join the conversation! ★★★</div>
 
-    <table class="geocities-table">
-        <tr>
-            <td colspan="2">
-                <center>
-                    <font size="+2"><b>🌐 Live Chat Room 🌐</b></font>
-                    <br><br>
-                    <i>"Connect with fellow retro enthusiasts from around the world!"</i>
-                </center>
-            </td>
-        </tr>
-        <tr>
-            <td width="70%">
-                <h2>💭 Chat Messages</h2>
-                <div id="chat-messages" style="height: 300px; border: 2px inset #C0C0C0; background: #FFFFFF; padding: 10px; overflow-y: auto; font-family: monospace;">
-                    <div><b>System:</b> Welcome to Toastyst's Chat Room!</div>
-                    <div><b>RetroGamer:</b> Hey everyone! Loving the new gaming section.</div>
-                    <div><b>CarFan:</b> That Jeep XJ page is awesome! What's your favorite trail?</div>
-                    <div><b>WebSurfer:</b> This site brings back so many memories of the 90s web!</div>
-                    <div><b>MusicLover:</b> Anyone else here for the MIDI collection?</div>
-                    <div><b>Toastyst:</b> Thanks for visiting everyone! Feel free to chat about retro gaming, cars, or anything else!</div>
-                </div>
+        <div class="chat-container" id="chat-messages">
+            <div><b>System:</b> Welcome to the retro chat room!</div>
+            <div><b>Toastyst:</b> Hey everyone! Welcome to my site.</div>
+            <div><b>WebSurfer99:</b> This place is awesome! Love the Windows 95 theme.</div>
+            <div><b>RetroFan:</b> Anyone else remember dial-up modems?</div>
+            <div><b>GameMaster:</b> Check out the gaming section - it's amazing!</div>
+            <div><b>CodeNinja:</b> The JavaScript work here is impressive.</div>
+            <div><b>You:</b> [Type your message below]</div>
+        </div>
 
-                <h2>✍️ Send a Message</h2>
-                <table class="geocities-table">
-                    <tr>
-                        <td><b>Your Name:</b></td>
-                        <td><input type="text" id="chat-name" value="Anonymous" style="width: 100%;"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <b>Message:</b><br>
-                            <textarea id="chat-message" rows="3" style="width: 100%;" placeholder="Type your message here..."></textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" align="center">
-                            <button onclick="sendChatMessage()" style="background: #C0C0C0; border: 2px outset #FFFFFF; padding: 4px 12px;">Send Message</button>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <td width="30%">
-                <div class="geocities-sidebar">
-                    <center><b>Chat Room Rules</b></center>
-                    <hr>
-                    • Be respectful<br>
-                    • No spam or flooding<br>
-                    • Keep it family-friendly<br>
-                    • Have fun chatting!<br>
-                    • Use appropriate language<br>
-                    <br>
-                    <b>Online Users:</b><br>
-                    <span id="online-count">7</span> people online<br>
-                    <small>Toastyst, RetroGamer,<br>CarFan, WebSurfer,<br>MusicLover, Guest1,<br>Guest2</small>
-                </div>
-            </td>
-        </tr>
-    </table>
+        <input type="text" class="chat-input" id="chat-input" placeholder="Type your message here..." maxlength="100">
+        <br>
+        <button class="chat-button" onclick="sendMessage()">Send</button>
+        <button class="chat-button" onclick="clearChat()">Clear</button>
 
-    <div class="geocities-guestbook">
-        <center><b>Chat Topics</b></center>
-        <hr>
-        Popular discussion topics:<br>
-        • Retro gaming tips<br>
-        • Car modifications<br>
-        • 90s web design<br>
-        • MIDI music<br>
-        • General chat
+        <script>
+            function sendMessage() {
+                const input = document.getElementById('chat-input');
+                const messages = document.getElementById('chat-messages');
+                if (input.value.trim()) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.innerHTML = '<b>You:</b> ' + input.value;
+                    messages.appendChild(messageDiv);
+                    messages.scrollTop = messages.scrollHeight;
+                    input.value = '';
+                }
+            }
+
+            function clearChat() {
+                const messages = document.getElementById('chat-messages');
+                messages.innerHTML = '<div><b>System:</b> Chat cleared!</div>';
+            }
+
+            document.getElementById('chat-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        </script>
+
+        <center>
+            <font size="-1" color="#808080">
+                <a href="#" onclick="window.dispatchEvent(new CustomEvent('navigatePage', {detail: 'home'}))">← Back to Home</a> |
+                <a href="#" onclick="window.dispatchEvent(new CustomEvent('navigatePage', {detail: 'guestbook'}))">Sign Guestbook</a>
+            </font>
+        </center>
     </div>
-
-    <center>
-        <font size="-1" color="#808080">
-            <a href="#" onclick="loadPage('home')">← Back to Home</a> |
-            <a href="#" onclick="loadPage('guestbook')">Sign Guestbook</a>
-        </font>
-    </center>
-</div>
+</body>
+</html>

@@ -1,0 +1,135 @@
+[
+  {
+    "name": "Home",
+    "col": 0,
+    "row": 0,
+    "action": {"type": "openBrowser", "arg": "home"},
+    "icon": "icons/desktop/1browser.jpg"
+  },
+  {
+    "name": "About Me",
+    "col": 0,
+    "row": 1,
+    "action": {"type": "openBrowser", "arg": "about"},
+    "icon": "icons/desktop/aboutme.jpg"
+  },
+  {
+    "name": "Retro Gaming",
+    "col": 0,
+    "row": 2,
+    "action": {"type": "openBrowser", "arg": "gaming"},
+    "icon": "icons/desktop/1games.jpg"
+  },
+  {
+    "name": "My Jeep XJ",
+    "col": 0,
+    "row": 3,
+    "action": {"type": "openBrowser", "arg": "jeep"},
+    "icon": "icons/desktop/1jeep.jpg"
+  },
+  {
+    "name": "1996 Camry",
+    "col": 0,
+    "row": 4,
+    "action": {"type": "openBrowser", "arg": "camry"},
+    "icon": "icons/desktop/1camry.jpg"
+  },
+  {
+    "name": "Cool Links",
+    "col": 0,
+    "row": 5,
+    "action": {"type": "openBrowser", "arg": "links"},
+    "icon": "icons/desktop/1links.jpg"
+  },
+  {
+    "name": "Meme Generator",
+    "col": 0,
+    "row": 6,
+    "action": {"type": "openBrowser", "arg": "meme-generator"},
+    "icon": "icons/desktop/1meme.jpg"
+  },
+  {
+    "name": "Chat Room",
+    "col": 1,
+    "row": 0,
+    "action": {"type": "openBrowser", "arg": "chat"},
+    "icon": "icons/desktop/1chat.jpg"
+  },
+  {
+    "name": "Music Player",
+    "col": 1,
+    "row": 1,
+    "action": {"type": "openBrowser", "arg": "music"},
+    "icon": "icons/desktop/1music.jpg"
+  },
+  {
+    "name": "My Computer",
+    "col": 1,
+    "row": 2,
+    "action": {"type": "openWindow", "arg": {"title": "My Computer", "content": "<h2>My Computer</h2><p>System: Windows Toasty5</p><p>Processor: Intel Pentium III 500MHz</p><p>Memory: 128MB RAM</p><p>Hard Drive: 6GB</p><p>Connection: Offline</p>"}},
+    "icon": "icons/desktop/1mypc.jpg"
+  },
+  {
+    "name": "Recycle Bin",
+    "col": 1,
+    "row": 3,
+    "action": {"type": "openWindow", "arg": {"title": "Recycle Bin", "content": "<h2>Recycle Bin</h2><p>Empty</p>"}},
+    "icon": "icons/desktop/1recycle.jpg"
+  },
+  {
+    "name": "Notepad",
+    "col": 1,
+    "row": 4,
+    "action": {"type": "openApp", "arg": "notepad"},
+    "icon": "icons/desktop/notepad.jpg"
+  },
+  {
+    "name": "Calculator",
+    "col": 1,
+    "row": 5,
+    "action": {"type": "openApp", "arg": "calculator"},
+    "icon": "icons/desktop/calc.jpg"
+  },
+  {
+    "name": "Paint",
+    "col": 1,
+    "row": 6,
+    "action": {"type": "openApp", "arg": "paint"},
+    "icon": "icons/desktop/paint.jpg"
+  },
+  {
+    "name": "Solitaire",
+    "col": 2,
+    "row": 0,
+    "action": {"type": "openApp", "arg": "solitaire"},
+    "icon": "icons/desktop/solitair.jpg"
+  },
+  {
+    "name": "Solmerica Online",
+    "col": 2,
+    "row": 1,
+    "action": {"type": "openApp", "arg": "solmerica"},
+    "icon": "icons/AOL/Logo_login.png"
+  },
+  {
+    "name": "Guestbook",
+    "col": 2,
+    "row": 2,
+    "action": {"type": "openBrowser", "arg": "guestbook"},
+    "icon": "icons/desktop/1guestbook.jpg"
+  },
+  {
+    "name": "Downloads",
+    "col": 2,
+    "row": 3,
+    "action": {"type": "openBrowser", "arg": "downloads"},
+    "icon": "icons/desktop/downloads.jpg"
+  },
+  {
+    "name": "News",
+    "col": 2,
+    "row": 4,
+    "action": {"type": "openBrowser", "arg": "news"},
+    "icon": "icons/desktop/news.jpg"
+  }
+]

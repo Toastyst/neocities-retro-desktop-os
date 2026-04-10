@@ -22,7 +22,7 @@ export function createApp(container) {
                 windowEl.style.height = '570px';
                 contentEl.innerHTML = `
                     <div style="display: flex; width: 100%; height: 100%;">
-                        <div class="sol-sidebar" style="background-image: url('icons/AOL/Untitled.jpg');"></div>
+                        <div class="sol-sidebar" style="width: 200px; background-image: url('icons/AOL/Untitled.jpg'); background-size: cover;"></div>
                         <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
                             <img src="icons/AOL/Logo_login.png" alt="Logo" class="sol-logo" style="max-width: 200px; max-height: 150px; margin-bottom: 20px;">
                             <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">Solmerica Online v3.0</div>
