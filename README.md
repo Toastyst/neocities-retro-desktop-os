@@ -6,7 +6,7 @@ A fully functional 1995 Windows 95/98 desktop emulation built with vanilla HTML5
 
 - **Boot Sequence**: Authentic BIOS-style startup with scrolling text and sounds
 - **Desktop Environment**: Draggable/resizable windows, taskbar with clock, desktop icons with snap system
-- **Browser**: Built-in Geocities-style web browser with 10+ pages
+- **Browser**: Built-in web browser 
 - **Applications**: Calculator, Paint, Solitaire, Notepad (toolbar/textarea/word count), Meme Generator, Solmerica Online (dial-up simulator)
 - **Audio System**: HTML5 audio with ambient HDD loop, sound effects
 - **Start Menu**: Hierarchical menu system with programs and settings
