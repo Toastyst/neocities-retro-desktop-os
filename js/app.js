@@ -31,18 +31,57 @@ async function loadConfig() {
 function initDesktop(desktopIcons, startMenuItems) {
     desktopManager.init(desktopIcons);
     taskbarManager.init();
+    const startBtn = document.querySelector('.start-button');
+    if (startBtn) {
+        startBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            startMenu.toggle();
+        });
+    }
 }
+
+const APP_CONFIG = {
+    solitaire: { title: 'Solitaire', width: 700, height: 560, className: 'solitaire-window' },
+    paint: { title: 'Paint', width: 520, height: 480, className: 'paint-window' },
+    calculator: { title: 'Calculator', width: 240, height: 320, className: 'calculator-window' },
+    notepad: { title: 'Notepad', width: 480, height: 360 },
+    solmerica: { title: 'Solmerica Online', width: 640, height: 480 }
+};
 
 // Open app
 async function openApp(appName) {
-    const createApp = await registry[appName]();
-    const windowEl = windowManager.openWindow(appName, '<div id="app-container"></div>');
-    const container = windowEl.querySelector('#app-container');
-    const app = createApp(container);
-    windowEl._app = app;
-    if (app.resize) {
-        windowEl._resizeObserver = new ResizeObserver(() => app.resize());
-        windowEl._resizeObserver.observe(windowEl);
+    if (!registry[appName]) {
+        console.error('Unknown app:', appName);
+        alert(`Application not found: ${appName}`);
+        return;
+    }
+    try {
+        const config = APP_CONFIG[appName] || { title: appName, width: 400, height: 300 };
+        const createApp = await registry[appName]();
+        const windowEl = windowManager.openWindow(
+            config.title,
+            '<div id="app-container" style="width:100%;height:100%;"></div>',
+            null,
+            null,
+            config.width,
+            config.height,
+            config.className || ''
+        );
+        const container = windowEl.querySelector('#app-container');
+        const app = createApp(container);
+        windowEl._app = app;
+        if (app.resize) {
+            const content = windowEl.querySelector('.window-content');
+            const doResize = () => {
+                app.resize(content.clientWidth, content.clientHeight);
+            };
+            windowEl._resizeObserver = new ResizeObserver(doResize);
+            windowEl._resizeObserver.observe(windowEl);
+            doResize();
+        }
+    } catch (err) {
+        console.error(`Failed to open app "${appName}":`, err);
+        alert(`Could not open ${appName}.\n\n${err.message}`);
     }
 }
 
@@ -96,6 +135,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.openWindow = windowManager.openWindow.bind(windowManager);
         window.loadPage = browserManager.loadPage.bind(browserManager);
         window.startMenuActions = {
+            'Notepad': () => openApp('notepad'),
+            'Calculator': () => openApp('calculator'),
+            'Solitaire': () => openApp('solitaire'),
+            'Solmerica Online': () => openApp('solmerica'),
+            'Minesweeper': () => alert('Minesweeper is not installed yet.'),
+            'Documents': () => alert('No documents found.'),
+            'Settings': () => alert('Display settings are not available.'),
+            'Find': () => alert('Find: Files or Folders'),
+            'Help': () => alert('Help is on the way... eventually.'),
+            'Run...': () => alert('Run dialog is not available.'),
+            'Shut Down...': () => location.reload(),
             'openApp': (app) => openApp(app),
             'openBrowser': (page) => browserManager.openBrowser(page),
             'run': (cmd) => console.log('Run:', cmd),

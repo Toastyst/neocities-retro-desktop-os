@@ -1,13 +1,9 @@
 // js/apps/registry.js
 export const registry = {
     solitaire: async () => {
-        try {
-            const module = await import('./solitaire/index.js');
-            return module.createApp;
-        } catch {
-            const module = await import('./solitaire.js');
-            return module.createApp;
-        }
+        const module = await import('./solitaire/index.js');
+        if (!module.createApp) throw new Error('Solitaire module is missing createApp export');
+        return module.createApp;
     },
     paint: async () => {
         try {
