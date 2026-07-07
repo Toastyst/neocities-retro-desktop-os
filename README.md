@@ -66,4 +66,4 @@ Modern browsers with HTML5 Audio.
 
 Retro computing tribute for Neocities.
 
-Enjoy the nostalgia! 🚀
+Enjoy the nostalgia lol! 🚀
